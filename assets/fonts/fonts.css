@@ -1,0 +1,51 @@
+﻿/* docs.microsoft.com/ru-ru/windows/uwp/style/segoe-ui-symbol-font#icon-list */
+@font-face {
+  font-family: 'Segoe';
+  font-style: normal;
+  font-weight: normal;
+  src: url('./SegoeMDL2Assets.ttf') format('truetype');
+}
+/* Monospace */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: normal;
+  src: url('./UbuntuMono.ttf') format('truetype');
+}
+/* Open Sans */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url('./OpenSansRegular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: normal;
+  src: url('./OpenSansItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: bold;
+  src: url('./OpenSansSemibold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: bold;
+  src: url('./OpenSansSemiboldItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 200;
+  src: url('./OpenSansLight.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 200;
+  src: url('./OpenSansLightItalic.ttf') format('truetype');
+}

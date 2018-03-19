@@ -1,0 +1,55 @@
+aside {
+	z-index: 2;
+	position: absolute;
+	left: 0px;top: 0px;
+	background: rgba(0,0,0,1);
+	height: 100%;
+	width: 48px;
+	border-left: 0px solid gray;
+	overflow: hidden;
+	transition: width .25s .5s ease;
+}
+aside:hover {width:190px}
+aside > div:nth-child(2) {
+	margin: 12px 0;
+	padding: 11px 0;
+	border: 0px solid gray;
+	border-width: 1px 0;
+}
+aside a,
+aside a:link,
+aside a:visited {
+	display: block;
+	width: 166px;
+	font-size: 87.5%;
+	line-height: 24px;
+	text-decoration: none;
+	padding: 12px 12px;
+	overflow: hidden;
+	white-space: nowrap;
+	color: darkgray;
+}
+aside a:hover {background-color: rgba(255,255,255,.125)}
+aside a span {
+	float: left;
+	margin-left: 12px;
+}
+aside a:first-child {border-top-color:transparent}
+aside a:before {
+	content: '\E0A2';
+	font: 16px/24px 'Segoe';
+	vertical-align: top;
+	height: 24px;
+	width: 24px;
+	float: left;
+	text-align: center;
+	color: white;
+}
+aside a.favr:before {content:'\E728'}
+aside a.list:before {content:'\E7F4'}
+aside a.cams:before {content:'\E714'}
+aside a.live:before {content:'\E93E'}
+aside a.pops:before {content:'\E8E1'}
+aside a.coll:before {content:'\E81E'}
+aside a.news:before {content:'\EA80'}
+aside a.conf:before {content:'\E713'}
