@@ -12,6 +12,7 @@
 }
 .schedule > li {border-top: 1px dashed rgba(200,200,200,.25)}
 .schedule > li:first-child {border-top-color: transparent}
+.schedule > li:nth-child(2n) {background: rgba(200,200,200,.05)}
 .tlcbar {
 	height: 36px;
 	padding: 5px 0 6px 0;
@@ -26,12 +27,6 @@
     align-items: center;
 	text-decoration: none;
 	position: relative;
-}
-.tlcbar:after {
-	content: '\E93E';
-	font: 24px/36px 'Segoe';
-	padding: 0 6px;
-	color: darkorange;
 }
 .tlcbar[href] {
 	color: rgb(255,255,255)	
@@ -51,16 +46,14 @@
 	padding: 0 0px 0 0;
 	flex: 1 0 48px;
 }
+.tlcbar[href] time:after {
+	display: inline-block;
+	content:'в эфире';
+	font-size: 11px;
+}
 .tlcbar span {
 	width: 100%;
 	max-height: 36px;
-}
-.tlcbar:after {
-	content: '\E93E';
-	font: 24px/36px 'Segoe';
-	padding: 0 6px;
-	color: darkorange;
-	color: rgb(70,140,220);
 }
 .tlcbar s {
 	position: absolute;

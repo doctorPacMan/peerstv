@@ -1,9 +1,15 @@
 "use strict";
 var $App = {
 initialize: function() {
-	//return
+	if(window.location.search.indexOf('?auth')>=0) return this.screen('auth');
+	return
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
+},
+screen: function(name) {
+	var stage = document.body.querySelector('div');
+	stage.style.display = 'none';
+	//console.log();
 },
 _onready_database: function(success, indb) {
 	console.log('database',window.database);
@@ -45,3 +51,11 @@ init: function(channels) {
 	new ModuleChannels('mod-channels',channels);
 }
 };
+function authorize(data,v) {
+	console.log('AUTHORIZE',data,v);
+};
+window.addEventListener('message',function(event) {
+console.log('MSSG', event.origin);
+console.log('MSSG', event.data);
+//if (~event.origin.indexOf('http://yoursite.com'))
+});
