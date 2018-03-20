@@ -41,6 +41,14 @@ static playlist(cid, url, callback) {
 	xhr.send(null);
 	//console.log(this.token);
 }
+static account(url, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', url, true);
+	xhr.setRequestHeader('Authorization','Bearer '+this.token);
+	this.setHandler(xhr,callback);
+	xhr.send(null);
+	console.log('account', this.token, url);
+}
 static request(url, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', url, true);

@@ -1,10 +1,14 @@
 "use strict";
 var $App = {
 initialize: function() {
-	if(window.location.search.indexOf('?auth')>=0) return this.screen('auth');
-	return
+	//if(window.location.search.indexOf('?auth')>=0) return this.screen('auth');
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
+	window.addEventListener('message',this.onmessage.bind(this));
+},
+onmessage: function(event) {
+	this._passport.onmessage(event);
+	//if (~event.origin.indexOf('http://yoursite.com'))
 },
 screen: function(name) {
 	var stage = document.body.querySelector('div');
@@ -23,6 +27,8 @@ _onready_whereami:function() {
 	XHR.token = window.whereami.token();
 	Date.offset = window.whereami.timeoffset();
 	//console.log(XHR.token);
+	return this._passport = new ModulePassport('mod-passport');
+
 	new playlistLoader(this._onready_playlist.bind(this), function(){});
 },
 _onready_playlist: function(data) {
@@ -51,11 +57,3 @@ init: function(channels) {
 	new ModuleChannels('mod-channels',channels);
 }
 };
-function authorize(data,v) {
-	console.log('AUTHORIZE',data,v);
-};
-window.addEventListener('message',function(event) {
-console.log('MSSG', event.origin);
-console.log('MSSG', event.data);
-//if (~event.origin.indexOf('http://yoursite.com'))
-});

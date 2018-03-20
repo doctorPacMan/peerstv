@@ -1,11 +1,10 @@
 .mod-passport {
-	right: 50%;
-	top: 50%;left:50%;
-	width: 640px;
-	height: 480px;
-	margin: -240px 0 0 -320px;
 	background: rgba(53,53,53,.95);
 	z-index: 2;
+}
+.mod-passport > div > div {
+	background: green;
+	height: 100%;
 }
 .mod-passport iframe {
 	border: 0;

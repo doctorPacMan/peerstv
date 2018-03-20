@@ -13,13 +13,6 @@ initialize: function(url) {
 	this._data = null;
 	this._this = null;
 
-if(true) {
-	let token = 'cfcf68e09dff4cd2b36eace69d1da73a',
-		tkexp = new Date();
-	tkexp.setMilliseconds(15*60*1e3);
-	cookie.set('token.current', token, tkexp);
-}
-
 	var wrmi = localStorage.getItem('app.whereami');//wrmi = false;
 	if(wrmi) this._onloadRegistry(JSON.parse(wrmi));
 	else XHR.whereami(this._url, this._onloadRegistry.bind(this));
@@ -63,7 +56,9 @@ _onloadRegistry: function(data, xhr) {
 
 	localStorage.setItem('app.whereami', JSON.stringify(data));
 	this.timeoffset(!xhr?false:xhr.getResponseHeader('Date'));
-	this._requestAuth();
+
+	if(!this.token()) this._requestToken();
+	else this._complete();
 },
 thiz: function() {
 	var thiz = new Object;
@@ -95,9 +90,17 @@ thiz: function() {
 		enumerable: false,
 		value: this.onready.bind(this)
 	});
+	Object.defineProperty(thiz, 'authorize', {configurable: false,
+		enumerable: true,
+		value: this.authorize.bind(this)
+	});
 	Object.defineProperty(thiz, 'token', {configurable: false,
 		enumerable: true,
 		value: this.token.bind(this)
+	});
+	Object.defineProperty(thiz, 'setAuthToken', {configurable: false,
+		enumerable: true,
+		value: this.setAuthToken.bind(this)
 	});
 	Object.defineProperty(thiz, 'iptv', {configurable: false,
 		enumerable: true,
@@ -122,6 +125,79 @@ timeoffset: function(time) {
 	//console.log('timeoffset', offset, wdt, now);
 	return this._timeoffset = offset;
 },
+setAuthToken: function(token) {
+	var tknew = token,
+		tkold = this.token();
+	if(tknew !== tkold) {
+		let tkexp = new Date();
+		tkexp.setMilliseconds(15*60*1e3);
+		cookie.set('token.current', tknew, tkexp);
+		console.log('setAuthToken', tknew);
+		XHR.token = tknew;
+		this.account();
+	}
+},
+authorize: function(code, ruri) {
+	console.log('AUTH', code, ruri);
+
+	var auth = this.service('auth'),
+		url = auth.location+'token/',
+		params = {
+			'grant_type':'authorization_code',
+			'client_secret':this.API_SECRET,
+			'client_id':this.API_CLIENT,
+			//'redirect_uri':encodeURIComponent(this.redir),
+			'redirect_uri':ruri,
+			'code':code
+		};
+	params = Object.keys(params).map(p=>{return p+'='+params[p]});
+	XHR.load(url, this._onAuthorize.bind(this), params.join('&'));
+},
+_onAuthorize: function(data) {
+	console.log('AUTH', data);
+
+var xhr = new XMLHttpRequest(),
+//token = 'cfcf68e09dff4cd2b36eace69d1da73a';
+token = data.access_token;
+xhr.open('GET', 'http://api.peers.tv/auth/2/account/', true);
+xhr.setRequestHeader('Authorization','Bearer '+token);
+xhr.onreadystatechange = function () {
+	if(xhr.readyState != 4) return;
+	if(xhr.status != 200) console.log(false, xhr.status);
+	else {
+	    var text = xhr.responseText, json;
+	    if(/^(?:\{|\[|\")/.test(text))
+		    try {json = JSON.parse(xhr.responseText)}
+		    catch(e) {console.log('Error',e,text)};
+		console.log(json || text, xhr);
+	}
+};
+xhr.send(null);
+
+},
+account: function() {
+	var auth = this.service('auth'),
+		apiurl = auth.location+'account/';
+/*
+var xhr = new XMLHttpRequest(),
+token = 'cfcf68e09dff4cd2b36eace69d1da73a';
+xhr.open('GET', 'http://api.peers.tv/auth/2/account/', true);
+xhr.setRequestHeader('Authorization','Bearer '+token);
+xhr.onreadystatechange = function () {
+	if(xhr.readyState != 4) return;
+	if(xhr.status != 200) console.log(false, xhr.status);
+	else {
+	    var text = xhr.responseText, json;
+	    if(/^(?:\{|\[|\")/.test(text))
+		    try {json = JSON.parse(xhr.responseText)}
+		    catch(e) {console.log('Error',e,text)};
+		console.log(json || text, xhr);
+	}
+};
+xhr.send(null);
+*/
+	XHR.account(apiurl, function(data,xhr){console.log('Account:',data,xhr.status)});
+},
 token: function(token) {
 	//return '8e53532d80ca016d436bc0b0a48bd1da';
 	if(token) {};
@@ -138,12 +214,12 @@ _requestContractors: function(cids) {
 		//console.log('CIDS',this._contractors);
 	}.bind(this));
 },
-_requestAuth: function() {
+_requestToken: function() {
 
 	var current = cookie.get('token.current'),
 		refresh = cookie.get('token.refresh');
 
-	if(current) return this._auth_complete(current);
+	if(current) return this._complete();
 
 	var auth = this.service('auth'),
 		url = auth.location+'token/',
@@ -154,9 +230,9 @@ _requestAuth: function() {
 		};
 
 	params = Object.keys(params).map(p=>{return p+'='+params[p]});
-	XHR.load(url, this._onloadAuth.bind(this), params.join('&'));
+	XHR.load(url, this._onloadToken.bind(this), params.join('&'));
 },
-_onloadAuth: function(data) {
+_onloadToken: function(data) {
 
 	var token = data.access_token,
 		expires = new Date();
@@ -168,10 +244,6 @@ _onloadAuth: function(data) {
 	expires.setHours(expires.getHours() + 24*7);
 	cookie.set('token.refresh', data.refresh_token, expires);
 	
-	this._auth_complete(cookie.get('token.current'));
-},
-_auth_complete: function(token) {
-	//console.log('token: ' +token);
 	this._complete();
 },
 _complete: function() {

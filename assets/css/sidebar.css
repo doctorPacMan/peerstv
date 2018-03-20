@@ -54,3 +54,7 @@ aside a.coll:before {content:'\E81E'}
 aside a.news:before {content:'\EA80'}
 aside a.conf:before {content:'\E713'}
 aside a.drop:before {content:'\E72C'}
+
+aside a.auth:before {content:'\EE57'}
+aside a.auth:before {content:'\E77B'}
+aside a.auth:before {content:'\EA8C';color:darkorange}
