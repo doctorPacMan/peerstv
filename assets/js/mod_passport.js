@@ -15,8 +15,7 @@ open() {
 	apiurl += '&client_id=demoapp';
 	apiurl += '&redirect_uri='+encodeURIComponent(this.redir);
 	this.iframe.setAttribute('src',apiurl);
-
-	//this.iframe.setAttribute('src',this.redir+'?code=2e2a2862a68caf4fb7e819d412cefe76');
+	//this.iframe.setAttribute('src',this.redir+'?code=a47f6880b9402ae893947787ac84b898');
 }
 onmessage(event) {
 	var win = event.source,

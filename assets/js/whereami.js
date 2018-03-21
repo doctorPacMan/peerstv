@@ -54,10 +54,10 @@ _onloadRegistry: function(data, xhr) {
 
 	this.iptv();
 
-	localStorage.setItem('app.whereami', JSON.stringify(data));
+	localStorage.setItem('app.whereami',JSON.stringify(data));
 	this.timeoffset(!xhr?false:xhr.getResponseHeader('Date'));
 
-	if(!this.token()) this._requestToken();
+	if(!this.token()) this._requestAuthToken();
 	else this._complete();
 },
 thiz: function() {
@@ -137,71 +137,13 @@ setAuthToken: function(token) {
 		this.account();
 	}
 },
-authorize: function(code, ruri) {
-	console.log('AUTH', code, ruri);
-
-	var auth = this.service('auth'),
-		url = auth.location+'token/',
-		params = {
-			'grant_type':'authorization_code',
-			'client_secret':this.API_SECRET,
-			'client_id':this.API_CLIENT,
-			//'redirect_uri':encodeURIComponent(this.redir),
-			'redirect_uri':ruri,
-			'code':code
-		};
-	params = Object.keys(params).map(p=>{return p+'='+params[p]});
-	XHR.load(url, this._onAuthorize.bind(this), params.join('&'));
-},
-_onAuthorize: function(data) {
-	console.log('AUTH', data);
-
-var xhr = new XMLHttpRequest(),
-//token = 'cfcf68e09dff4cd2b36eace69d1da73a';
-token = data.access_token;
-xhr.open('GET', 'http://api.peers.tv/auth/2/account/', true);
-xhr.setRequestHeader('Authorization','Bearer '+token);
-xhr.onreadystatechange = function () {
-	if(xhr.readyState != 4) return;
-	if(xhr.status != 200) console.log(false, xhr.status);
-	else {
-	    var text = xhr.responseText, json;
-	    if(/^(?:\{|\[|\")/.test(text))
-		    try {json = JSON.parse(xhr.responseText)}
-		    catch(e) {console.log('Error',e,text)};
-		console.log(json || text, xhr);
-	}
-};
-xhr.send(null);
-
-},
-account: function() {
-	var auth = this.service('auth'),
-		apiurl = auth.location+'account/';
-/*
-var xhr = new XMLHttpRequest(),
-token = 'cfcf68e09dff4cd2b36eace69d1da73a';
-xhr.open('GET', 'http://api.peers.tv/auth/2/account/', true);
-xhr.setRequestHeader('Authorization','Bearer '+token);
-xhr.onreadystatechange = function () {
-	if(xhr.readyState != 4) return;
-	if(xhr.status != 200) console.log(false, xhr.status);
-	else {
-	    var text = xhr.responseText, json;
-	    if(/^(?:\{|\[|\")/.test(text))
-		    try {json = JSON.parse(xhr.responseText)}
-		    catch(e) {console.log('Error',e,text)};
-		console.log(json || text, xhr);
-	}
-};
-xhr.send(null);
-*/
-	XHR.account(apiurl, function(data,xhr){console.log('Account:',data,xhr.status)});
-},
-token: function(token) {
+token: function() {
 	//return '8e53532d80ca016d436bc0b0a48bd1da';
-	if(token) {};
-	return cookie.get('token.current');
+	var authToken = cookie.get('token'),
+		anonToken = cookie.get('token.anon'),
+		token = authToken || anonToken || null;
+	console.log((authToken?'auth':'anon')+' token: '+token);	
+	return token;
 },
 _setDatetime: function(headerDate) {
 	if(headerDate) console.log('DATE', new Date(headerDate));
@@ -214,37 +156,52 @@ _requestContractors: function(cids) {
 		//console.log('CIDS',this._contractors);
 	}.bind(this));
 },
-_requestToken: function() {
-
-	var current = cookie.get('token.current'),
-		refresh = cookie.get('token.refresh');
-
-	if(current) return this._complete();
-
-	var auth = this.service('auth'),
-		url = auth.location+'token/',
+authorize: function(code, redirect_uri) {
+	console.log('authorize',code,redirect_uri);
+	this._requestAuthToken(code, redirect_uri);
+},
+_requestAuthToken: function(code, redirect_uri) {
+	this.token();
+	var anon = (!code || !redirect_uri),
+		auth = this.service('auth'),
+		apiurl = auth.location+'token/',
 		params = {
-			'grant_type': 'inetra:anonymous',
+			'grant_type':'inetra:anonymous',
 			'client_secret':this.API_SECRET,
 			'client_id':this.API_CLIENT
 		};
 
-	params = Object.keys(params).map(p=>{return p+'='+params[p]});
-	XHR.load(url, this._onloadToken.bind(this), params.join('&'));
+	if(!anon) {
+		params['grant_type'] = 'authorization_code';
+		params['redirect_uri'] = redirect_uri;
+		params['code'] = code;
+	}
+	params = Object.keys(params).map(p => {return p+'='+params[p]}).join('&');
+	XHR.load(apiurl, this._onloadToken.bind(this,!anon), params);
 },
-_onloadToken: function(data) {
+_onloadToken: function(auth, data, xhr) {
+
+	if(!data) return console.log('AUTH ERROR', xhr.status);
 
 	var token = data.access_token,
 		expires = new Date();
-
-	//console.log('auth data', data);
+	console.log('set '+(auth?'auth':'anon')+' token', data);
 	expires.setMilliseconds(1e3*data.expires_in);
-	cookie.set('token.current', data.access_token, expires);
+	if(auth) {
+		cookie.del('token.anon');
+		cookie.set('token', token, expires);
+	} else {
+		cookie.del('token');
+		cookie.set('token.anon', token, expires);
+	}
 
 	expires.setHours(expires.getHours() + 24*7);
 	cookie.set('token.refresh', data.refresh_token, expires);
 	
-	this._complete();
+	if(auth) {
+		var apiurl = this.service('auth').location+'account/';
+		XHR.account(apiurl, $App.setAccount.bind($App));
+	} else this._complete();
 },
 _complete: function() {
 	this._cbacks.forEach((cb) => {cb()});
