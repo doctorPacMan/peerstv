@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded',function(e){
 		r = s.match(/code=([^&]+)/),
 		code = !r ? null : r[1];
 
-	span.innerText = code ? ('success\n'+code) : 'failure';
+	span.innerText = code ? code : 'failure';
 	//console.log('AUTH',s,p);
 	p.postMessage(s,'*');
 

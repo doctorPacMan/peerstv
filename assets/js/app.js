@@ -16,7 +16,9 @@ _onready_database: function(success, indb) {
 },
 _onready_whereami:function() {
 	console.log('whereami',window.whereami);
-	this.setAuthToken()	
+	this.api = window.whereami;
+	this.setAuthToken();
+	this.setAccount();
 	return this._passport = new ModulePassport('mod-passport');
 	//console.log(window.whereami.contractor());
 	//console.log(window.whereami.territory());
@@ -37,12 +39,10 @@ drop: function() {
 	localStorage.removeItem('app.whereami');
 	console.log('drop whereami',localStorage.getItem('app.whereami')===null ? 'success' : 'failure');
 
+	localStorage.removeItem('app.account');
+	localStorage.removeItem('app.retoken');
 	cookie.del('token');
-	cookie.del('token.anon');
-	cookie.del('token.refresh');
 	console.log('token',cookie.get('token')===null ? 'success' : 'failure');
-	console.log('token.anon',cookie.get('token.anon')===null ? 'success' : 'failure');
-	console.log('token.refresh',cookie.get('token.refresh')===null ? 'success' : 'failure');
 },
 init: function(channels) {
 	//console.log(this.api);
@@ -54,9 +54,16 @@ init: function(channels) {
 setAuthToken: function() {
 	var token = window.whereami.token();
 	if(token) XHR.token = token;
-	console.log('setAuthToken:', token);
+	console.log('setToken:', token);
 },
-setAccount: function(data, xhr) {
-	console.log('Set account:', data);
-}
+setAccount: function() {
+	var account = this.account();
+	console.log('Set account:', account);
+	if(account) {
+		this.request.archive(function(data){console.log('ARH',data)});
+		this.request.favourites(function(data){console.log('FVR',data)});
+	}
+},
+account: function() {return this.api.account()},
+token: function() {return this.api.token()}
 };

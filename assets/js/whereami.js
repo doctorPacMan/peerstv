@@ -3,8 +3,6 @@ var Whereami = function() {return this.initialize.apply(this,arguments)};
 Whereami.prototype = {
 INETRA_CID: 2,
 API_VERSION: 2,
-API_CLIENT: 'demoapp',
-API_SECRET: 'demoapp',
 API_HOST: 'http://api.peers.tv',
 initialize: function(url) {
 	this._url = this.API_HOST+'/registry/2/whereami.json';
@@ -57,7 +55,7 @@ _onloadRegistry: function(data, xhr) {
 	localStorage.setItem('app.whereami',JSON.stringify(data));
 	this.timeoffset(!xhr?false:xhr.getResponseHeader('Date'));
 
-	if(!this.token()) this._requestAuthToken();
+	if(!this.token()) this._authorize();
 	else this._complete();
 },
 thiz: function() {
@@ -94,6 +92,10 @@ thiz: function() {
 		enumerable: true,
 		value: this.authorize.bind(this)
 	});
+	Object.defineProperty(thiz, 'account', {configurable: false,
+		enumerable: true,
+		value: this.account.bind(this)
+	});
 	Object.defineProperty(thiz, 'token', {configurable: false,
 		enumerable: true,
 		value: this.token.bind(this)
@@ -125,26 +127,6 @@ timeoffset: function(time) {
 	//console.log('timeoffset', offset, wdt, now);
 	return this._timeoffset = offset;
 },
-setAuthToken: function(token) {
-	var tknew = token,
-		tkold = this.token();
-	if(tknew !== tkold) {
-		let tkexp = new Date();
-		tkexp.setMilliseconds(15*60*1e3);
-		cookie.set('token.current', tknew, tkexp);
-		console.log('setAuthToken', tknew);
-		XHR.token = tknew;
-		this.account();
-	}
-},
-token: function() {
-	//return '8e53532d80ca016d436bc0b0a48bd1da';
-	var authToken = cookie.get('token'),
-		anonToken = cookie.get('token.anon'),
-		token = authToken || anonToken || null;
-	console.log((authToken?'auth':'anon')+' token: '+token);	
-	return token;
-},
 _setDatetime: function(headerDate) {
 	if(headerDate) console.log('DATE', new Date(headerDate));
 },
@@ -156,55 +138,8 @@ _requestContractors: function(cids) {
 		//console.log('CIDS',this._contractors);
 	}.bind(this));
 },
-authorize: function(code, redirect_uri) {
-	console.log('authorize',code,redirect_uri);
-	this._requestAuthToken(code, redirect_uri);
-},
-_requestAuthToken: function(code, redirect_uri) {
-	this.token();
-	var anon = (!code || !redirect_uri),
-		auth = this.service('auth'),
-		apiurl = auth.location+'token/',
-		params = {
-			'grant_type':'inetra:anonymous',
-			'client_secret':this.API_SECRET,
-			'client_id':this.API_CLIENT
-		};
-
-	if(!anon) {
-		params['grant_type'] = 'authorization_code';
-		params['redirect_uri'] = redirect_uri;
-		params['code'] = code;
-	}
-	params = Object.keys(params).map(p => {return p+'='+params[p]}).join('&');
-	XHR.load(apiurl, this._onloadToken.bind(this,!anon), params);
-},
-_onloadToken: function(auth, data, xhr) {
-
-	if(!data) return console.log('AUTH ERROR', xhr.status);
-
-	var token = data.access_token,
-		expires = new Date();
-	console.log('set '+(auth?'auth':'anon')+' token', data);
-	expires.setMilliseconds(1e3*data.expires_in);
-	if(auth) {
-		cookie.del('token.anon');
-		cookie.set('token', token, expires);
-	} else {
-		cookie.del('token');
-		cookie.set('token.anon', token, expires);
-	}
-
-	expires.setHours(expires.getHours() + 24*7);
-	cookie.set('token.refresh', data.refresh_token, expires);
-	
-	if(auth) {
-		var apiurl = this.service('auth').location+'account/';
-		XHR.account(apiurl, $App.setAccount.bind($App));
-	} else this._complete();
-},
 _complete: function() {
-	this._cbacks.forEach((cb) => {cb()});
+	if(this._cbacks) this._cbacks.forEach((cb) => {cb()});
 	delete this._cbacks;
 },
 territory: function(tid) {

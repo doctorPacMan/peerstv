@@ -29,7 +29,13 @@ static load(url, callback, params) {
 	xhr.open('POST', url, true);
 	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	this.setHandler(xhr,callback);
-	xhr.send(params || null);
+
+	if(!params) params = null;
+	else if(typeof params === 'string') {}
+	else if(typeof params === 'object') 
+		params = Object.keys(params).map(p => {return p+'='+params[p]}).join('&');
+
+	xhr.send(params);
 }
 static playlist(cid, url, callback) {
 	var xhr = new XMLHttpRequest();
@@ -50,6 +56,10 @@ static account(url, callback) {
 	console.log('account', this.token, url);
 }
 static request(url, callback) {
+	if(!this.token) {
+		console.error('Unauthorized request '+url);
+		return callback(false,null);
+	}
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', url, true);
 	xhr.setRequestHeader('Authorization','Bearer '+this.token);
