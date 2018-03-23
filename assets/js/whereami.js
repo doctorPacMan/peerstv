@@ -3,9 +3,10 @@ var Whereami = function() {return this.initialize.apply(this,arguments)};
 Whereami.prototype = {
 INETRA_CID: 2,
 API_VERSION: 2,
-API_HOST: 'http://api.peers.tv',
+API_HOST: 'api.peers.tv',
+API_HOST: 'a.trunk.ptv.bender.inetra.ru',
 initialize: function(url) {
-	this._url = this.API_HOST+'/registry/2/whereami.json';
+	this._url = '//'+this.API_HOST+'/registry/2/whereami.json';
 	//this._url = '/data/whereami.json';
 	this._cbacks = [];
 	this._data = null;
@@ -131,7 +132,7 @@ _setDatetime: function(headerDate) {
 	if(headerDate) console.log('DATE', new Date(headerDate));
 },
 _requestContractors: function(cids) {
-	var url = this.API_HOST+'/registry/'+this.API_VERSION+'/contractors.json?id=';
+	var url = '//'+this.API_HOST+'/registry/'+this.API_VERSION+'/contractors.json?id=';
 	url += cids.join(',');
 	XHR.load(url,function(data){
 		data.contractors.forEach(c=>{this._contractors[c.contractorId] = c});
@@ -178,6 +179,10 @@ service: function(type) {
 			cur = apv.find(s=>{return s.majorVersion == this.API_VERSION});
 		servapi = (cur || apv[apv.length - 1]);
 	}
+	
+	if(servapi && servapi.location && true)
+		servapi.location = servapi.location.replace('//api.peers.tv',('//'+this.API_HOST));
+	
 	//console.log('services/'+type, servapi);
 	return servapi;
 },

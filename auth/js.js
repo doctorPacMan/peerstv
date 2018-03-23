@@ -4,12 +4,13 @@ document.addEventListener('DOMContentLoaded',function(e){
 	span.innerText = 'Authorize';
 
 	var s = document.location.search,
-		p = window.parent,
 		r = s.match(/code=([^&]+)/),
-		code = !r ? null : r[1];
-
-	span.innerText = code ? code : 'failure';
-	//console.log('AUTH',s,p);
-	p.postMessage(s,'*');
-
+		code = !r ? null : r[1],
+		p = window.parent;
+	
+	//console.log('AUTH',(!s?'empty':code));
+	if(!s) span.innerText = document.location.href;
+	else span.innerText = code ? code : 'code failure';
+	
+	if(s) p.postMessage(s,'*');
 },false);
