@@ -4,7 +4,7 @@ Whereami.prototype = {
 INETRA_CID: 2,
 API_VERSION: 2,
 API_HOST: 'api.peers.tv',
-API_HOST: 'a.trunk.ptv.bender.inetra.ru',
+//API_HOST: 'a.trunk.ptv.bender.inetra.ru',
 initialize: function(url) {
 	this._url = '//'+this.API_HOST+'/registry/2/whereami.json';
 	//this._url = '/data/whereami.json';
@@ -18,9 +18,11 @@ initialize: function(url) {
 	return this.thiz();
 },
 _onloadRegistry: function(data, xhr) {
+	//console.log('whereami '+(xhr?'request':'restore'), data);
 	this._data = {
 		_contractors:{},
 		_territories:{},
+		_timeoffset: 0,
 		contractor: {},
 		territories:[],
 		services:[]
@@ -51,13 +53,30 @@ _onloadRegistry: function(data, xhr) {
 		this.territoryId = data.territories[0].territoryId;
 	}
 
-	this.iptv();
+	var wrmdate = !xhr ? null : xhr.getResponseHeader('Date');
+	data.timeoffset = this.timeoffset(wrmdate);
+	Date.prototype.timeoffset = data.timeoffset;
+	//console.log('set Date.current()', Date.current());
+	//console.log('Date.current() offset: '+Date.prototype.timeoffset +'\nlocal: '+ new Date() +'\nfixed: '+ Date.current());
 
 	localStorage.setItem('app.whereami',JSON.stringify(data));
-	this.timeoffset(!xhr?false:xhr.getResponseHeader('Date'));
 
-	if(!this.token()) this._authorize();
-	else this._complete();
+	//this._complete();
+	return this._authorize();
+},
+timeoffset: function(wrmdate) {
+	var offset = (this._data.timeoffset || 0),
+		apitime, territory, tzoffset = 0;
+	
+	if(wrmdate === null) return offset;
+	else apitime = new Date(wrmdate);
+
+	offset = apitime.getTime() - Date.now();
+	if(territory = this.territory()) {
+		let localtz = -60 * (new Date).getTimezoneOffset();
+		tzoffset = localtz - territory.timezone;
+	}
+	return offset - (tzoffset*1e3);
 },
 thiz: function() {
 	var thiz = new Object;
@@ -68,10 +87,6 @@ thiz: function() {
 	Object.defineProperty(thiz, 'url', {configurable: false,
 		enumerable: false, writable: false,
 		value: this._url.toString()
-	});
-	Object.defineProperty(thiz, 'timeoffset', {configurable: false,
-		enumerable: true, writable: false,
-		value: this.timeoffset.bind(this,false)
 	});
 	Object.defineProperty(thiz, 'territory', {configurable: false,
 		enumerable: true, writable: false,
@@ -101,10 +116,6 @@ thiz: function() {
 		enumerable: true,
 		value: this.token.bind(this)
 	});
-	Object.defineProperty(thiz, 'setAuthToken', {configurable: false,
-		enumerable: true,
-		value: this.setAuthToken.bind(this)
-	});
 	Object.defineProperty(thiz, 'iptv', {configurable: false,
 		enumerable: true,
 		value: this.iptv.bind(this)
@@ -119,14 +130,6 @@ onready: function(callback) {
 	if(this._data===null) this._cbacks.push(callback);
 	else callback();
 	return this._this;
-},
-timeoffset: function(time) {
-	if(!time) return (this._timeoffset || 0);
-	var wdt = new Date(time),
-		now = new Date(),
-		offset = wdt.getTime() - now.getTime();
-	//console.log('timeoffset', offset, wdt, now);
-	return this._timeoffset = offset;
 },
 _setDatetime: function(headerDate) {
 	if(headerDate) console.log('DATE', new Date(headerDate));
@@ -180,9 +183,7 @@ service: function(type) {
 		servapi = (cur || apv[apv.length - 1]);
 	}
 	
-	if(servapi && servapi.location && true)
-		servapi.location = servapi.location.replace('//api.peers.tv',('//'+this.API_HOST));
-	
+	//if(servapi && servapi.location)	servapi.location = servapi.location.replace('//api.peers.tv',('//'+this.API_HOST));
 	//console.log('services/'+type, servapi);
 	return servapi;
 },

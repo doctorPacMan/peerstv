@@ -17,6 +17,8 @@
 	<link href="assets/css/css.css" rel="stylesheet" />
 	
 	<script src="assets/js/ajax.js"></script>
+	<script src="assets/js/date.js"></script>
+	<script src="assets/js/timer.js"></script>
 	<script src="assets/js/cookie.js"></script>
 
 	<script src="assets/js/database.js"></script>
@@ -40,7 +42,7 @@
 <body class="win-type-body"><div>
 	<aside>
 		<div>
-		<a class="favr" href=""><span>Избранное</span></a>
+		<a class="favr" onclick="$App.favor()" href="#favourites"><span>Избранное</span></a>
 		<a class="list" href=""><span>Все каналы</span></a>
 		<a class="cams" href=""><span>Перекрёстки</span></a>
 		</div>
@@ -58,8 +60,15 @@
 	</aside>
 	
 	<section class="mod-passport" id="mod-passport">
-		<h2>Account</h2>
-		<div><div><iframe src="about:blank"></iframe></div></div>
+		<h2>Account<time data-timeout="12">00:00:00</time></h2>
+		<div><div>
+			time
+			<hr>
+			id, name, token, expires
+			<hr>
+			contractor, territory
+		</div></div>
+		<iframe src="about:blank"></iframe>
 	</section>
 
 	<section class="mod-schedule" id="mod-schedule">

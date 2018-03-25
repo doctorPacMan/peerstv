@@ -56,13 +56,14 @@ static account(url, callback) {
 	console.log('account', this.token, url);
 }
 static request(url, callback) {
-	if(!this.token) {
+	var token = $App.api.token();
+	if(!token) {
 		console.error('Unauthorized request '+url);
 		return callback(false,null);
 	}
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', url, true);
-	xhr.setRequestHeader('Authorization','Bearer '+this.token);
+	xhr.setRequestHeader('Authorization','Bearer '+token);
 	this.setHandler(xhr,callback);
 	xhr.send(null);
 	//console.log(this.token);
