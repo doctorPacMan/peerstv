@@ -40,8 +40,7 @@ _constructor(){
 	var node = section.querySelector('#acc-provider');
 	this._N.provider = {
 		logo: node.querySelector('img'),
-		name: node.querySelector('u'),
-		brand: node.querySelector('s')
+		name: node.querySelector('sub')
 	}
 	var node = section.querySelector('#acc-account');
 	this._N.account = {
@@ -91,9 +90,11 @@ onmessage(event) {
 updateProvider(data) {
 	console.log('updateProvider',data);
 	var logo = data.images.find(v=>{return v.profile===1});
-	this._N.provider.logo.setAttribute('src',logo.URL);
-	this._N.provider.name.innerText = data.name;
-	this._N.provider.brand.innerText = data.brandName;
+	this._N.provider.logo.setAttribute('src',logo?logo.URL:'');
+
+	var name = data.name || 'unknown';
+	if(data.brandName) name = '\u00AB'+data.brandName+'\u00BB';
+	this._N.provider.name.innerText =  name;
 }
 updateTerritory(data) {
 	console.log('updateTerritory',data);

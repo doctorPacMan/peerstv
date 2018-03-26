@@ -5,7 +5,7 @@ initialize: function() {
 
 //this.api = new Whereami();
 //this._passport = new ModulePassport('mod-passport');
-//return;
+return;
 
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
