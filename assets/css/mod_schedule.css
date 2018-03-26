@@ -55,6 +55,7 @@
 	width: 100%;
 	max-height: 36px;
 }
+.tlcbar span:first-line {}
 .tlcbar s {
 	position: absolute;
 	left: 0;height: 3px;

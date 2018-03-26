@@ -2,10 +2,11 @@
 	background: rgba(53,53,53,.95);
 	z-index: 2;
 }
+.mod-passport.hddn {}
 .mod-passport > div > div {
-	padding: 1em;
 	position: relative;
 	height: 100%;
+	padding: 0px;
 }
 .mod-passport iframe {
 	border: 0;
@@ -20,14 +21,116 @@
 }
 .mod-passport iframe.hddn {
 	pointer-events: none;
-	opacity: .25;
+	opacity: .333;
+	display: none;
 }
+.mod-passport > h2 del {
+	width: 36px;
+	height: 36px;
+	margin: 5px 0px 0 0;
+	float: right;
+	font: 20px/36px 'Segoe';
+	text-decoration: none;
+	text-align: center;
+	color: darkgray;
+	text-shadow: 0 -1px 0px black;
+	background: rgba(200,200,200,.0);
+}
+.mod-passport > h2 del:before {content: '\E711'}
+.mod-passport > h2 del:hover {background: rgba(200,200,200,.125)}
 .mod-passport > h2 time {
 	display: inline-block;
 	vertical-align: middle;
-	margin: 0 0 0 .5em;
 	padding: 0 0 0 .5em;
+	margin: 0 0 0 .5em;
 	color: darkgray;
 	font: 12px/16px monospace;
 	border-left: 1px solid gray;
+}
+.currentime {
+	background: black;
+	line-height: 36px;
+}
+.currentime > time {
+	font-size: 24px;
+	font-weight: 200;
+	float: right;
+}
+
+.b-territory {
+	padding: 11px 12px 0;
+	margin: 12px 0 0 0;
+	line-height: 24px;
+	color: darkgray;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-content: flex-start;
+	align-items: center;
+	border-top: 1px solid rgb(60,120,200);
+}
+.b-territory > time,
+.b-territory > span {
+	display: block;
+	padding: 0 0 2px;
+}
+.b-territory > span {
+	width: 100%;
+	line-height: 16px;
+	font-size: 11px;
+}
+.b-territory > span u {
+	font-size: 14px;
+	color: white;
+}
+.b-territory > time {
+	margin-left: 6px;
+	padding-left: 5px;
+	border-left: 1px solid rgba(125,125,125,.5);
+	font-size: 24px;
+	font-weight: 200;
+}
+
+.b-contractor {
+	height: 48px;
+	border-bottom: 0px solid rgb(60,120,200);
+	white-space: nowrap;
+	font-size: 14px;
+}
+.b-contractor > img {
+	float: left;
+	height: 48px;
+	width: auto;
+	margin-right: 6px;
+	font-size: 18px;
+	background: black;
+}
+.b-contractor > u,
+.b-contractor > s {
+	display: block;
+	overflow: hidden;
+}
+.b-contractor > u {
+	line-height: 28px;
+	font-size: 114%;
+}
+.b-contractor > s {
+	line-height: 14px;
+	font-size: 93%;
+	color: darkgray;
+}
+.b-contractor > s:after {content: '\00BB'}
+.b-contractor > s:before {content: '\00AB'}
+
+.b-account {
+	font-size: 14px;
+	background: black;
+	padding: 12px;
+}
+.b-account > h5 {
+
+}
+.b-account > span {
+	font: 14px monospace;
+	color: lightgreen;
 }

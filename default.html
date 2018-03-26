@@ -32,6 +32,7 @@
 	<script src="assets/js/playlistM3U8.js"></script>
 	<script src="assets/js/playlist.js"></script>
 
+	<script src="assets/js/mod.js"></script>
 	<script src="assets/js/mod_channels.js"></script>
 	<script src="assets/js/mod_passport.js"></script>
 
@@ -60,19 +61,35 @@
 	</aside>
 	
 	<section class="mod-passport" id="mod-passport">
-		<h2>Account<time data-timeout="12">00:00:00</time></h2>
+		<h2><u>Account</u><time data-timeout="12">00:00:00</time></h2>
 		<div><div>
-			time
-			<hr>
-			id, name, token, expires
-			<hr>
-			contractor, territory
+
+			<div class="b-contractor" id="acc-provider">
+				<img src="">
+				<u>Provider</u>
+				<s>Brandname</s>
+			</div>
+
+			<div class="b-territory" id="acc-territory">
+				<span>
+					<u>Новосибирск</u>
+					<br>Часовой пояс: <s>(МСК+4)</s>
+				</span>
+				<time>00:00:00</time>
+			</div>
+
+			<div class="b-account" id="acc-account">
+				<h5><u>Anonymous</u> #<s>12345</s></h5>
+				<span></span>
+				<time>00:00</time>
+			</div>
+
 		</div></div>
-		<iframe src="about:blank"></iframe>
+		<iframe src="about:blank" class="hddn"></iframe>
 	</section>
 
 	<section class="mod-schedule" id="mod-schedule">
-		<h2>Schedule</h2>
+		<h2><u>Schedule</u></h2>
 		<div><div>
 			<ol class="schedule">
 				<li>
@@ -111,7 +128,7 @@
 	</section>
 
 	<section>
-		<h2>Peers.TV UWP</h2>
+		<h2><u>Peers.TV UWP</u></h2>
 		<div><div>
 			Contractor<hr>
 			Territory
@@ -119,7 +136,7 @@
 	</section>
 
 	<section class="mod-channels" id="mod-channels">
-		<h2>Channels</h2>
+		<h2><u>Channels</u></h2>
 		<div><div>
 			<ol class="chanlist">
 <!--

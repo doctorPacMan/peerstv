@@ -37,52 +37,23 @@ account: function(data) {
 },
 _authorize: function() {
 
-	var token = this.token(),
-		account = this.account();
-	//console.log('account', account);
+	var account = this.account(),
+		refresh = account ? account.refresh : null,
+		token = this.token();
+	console.log('authorize init', token, refresh);
 	
-	if(account.token) {
-		//console.log('AUTH token restore', account);
-		//console.log('AUTH token restore', account.token, token);
-		this.account({refresh:account.refresh});
-		this._setToken(account.token, account.expires, account.refresh);
-		//$App.setAccount();
+	if(token) {
+		console.log('token restore');
+		this._setToken(token, account.expires, account.refresh);
+		this._complete();
+	} else if(refresh) {
+		console.log('token refresh');
+		this._refreshAuthToken(refresh,null);
 	}
 	else {
-		console.log('AUTH token request');
+		console.log('token request');
 		this._requestAuthToken(null,null);
-		//let data = {"access_token":"a84946e8591aae1e95ce2ed316d8c10d","token_type":"bearer","expires_in":450,"refresh_token":"7aa467b7d73a1d35e89810a22cfa5b82"};
-		//this._onloadAuthToken(false,data,null);
 	}
-
-	return;
-
-	var refresh = localStorage.getItem('app.account');
-	
-	var token = localStorage.getItem('app.token'),
-		refresh = !token ? null : refresh.refresh,
-		expires = !token ? null : refresh.expires;
-	if(expires) {
-		expires = new Date(parseInt(expires,10));
-		console.warn('token expires', expires);
-	}
-
-	var account = {};
-	console.log('authorize', token, expires, refresh);
-	console.warn('token '+(refresh?'refresh':'request'));
-
-return;
-
-	if(refresh) this._refreshAuthToken(refresh);
-	else this._requestAuthToken(null,null);
-
-return;
-
-	console.warn('token '+(refresh?'refresh':'request'));
-	if(refresh) this._refreshAuthToken(refresh);
-	else this._requestAuthToken(null,null);
-
-	//this._complete();
 },
 _refreshAuthToken: function(token) {
 	var	apiurl = this.service('auth'),
@@ -104,7 +75,11 @@ _requestAuthToken: function(authcode, redirect_uri) {
 			'grant_type':'inetra:anonymous'
 		};
 
-	if(authcode) {
+	if(false) {// TODO ?
+		params.grant_type = 'refresh_token';
+		params.refresh_token = '<token>';
+	}
+	else if(authcode) {
 		params.grant_type = 'authorization_code';
 		params.redirect_uri = redirect_uri;
 		params.code = authcode;
@@ -113,20 +88,18 @@ _requestAuthToken: function(authcode, redirect_uri) {
 },
 _onloadAuthToken: function(code, data, xhr) {
 
-	console.log('AUTH token onload', code, data);
-
-	if(!data) return console.error('AUTH > token failure '+xhr.status);
-	else console.log('AUTH > token onload', data);
+	//console.log('AUTH token onload', code, data);
+	if(!data) return console.error('token request failure '+xhr.status);
+	else console.log('token onload', code, data);
 
 	//{"access_token":"a84946e8591aae1e95ce2ed316d8c10d","token_type":"bearer","expires_in":450,"refresh_token":"7aa467b7d73a1d35e89810a22cfa5b82"}
 	var expires = Date.current().setMilliseconds(data.expires_in * 1e3);
 	this._setToken(data.access_token, expires, data.refresh_token);
-	this._requestAccount();	
 },
 _requestAccount: function() {
 	var apiurl = this.service('auth').location+'account/';
 	XHR.request(apiurl,(data)=>{
-		//console.log('ACC DATA',data);
+		console.log('account',data);
 		this.account(data);
 		this._complete();
 		$App.setAccount();
@@ -135,12 +108,12 @@ _requestAccount: function() {
 _setToken: function(token, expires, refresh) {
 	cookie.set('token', token, expires);
 	this.account({expires:expires, refresh:refresh});
-
+	//this._requestAccount();
+	
 	var xd = new Date(expires),
 		xt = xd - Date.current(),
 		xt = Math.floor(xt/1000);
-	
-//xt = 5;
+	//xt = 5;
 	if(this._refresh_timeout) clearTimeout(this._refresh_timeout);
 	this._refresh_timeout = setTimeout(this._refreshAuthToken.bind(this,refresh), xt*1e3);
 	//console.log('token '+token+' timeout '+xt+'s');

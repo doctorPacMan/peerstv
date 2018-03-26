@@ -3,9 +3,9 @@
 var $App = {
 initialize: function() {
 
-this._passport = new ModulePassport('mod-passport');
-this._passport.update();
-return;
+//this.api = new Whereami();
+//this._passport = new ModulePassport('mod-passport');
+//return;
 
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
@@ -21,17 +21,8 @@ _onready_database: function(success, indb) {
 	window.whereami.onready(this._onready_whereami.bind(this));
 },
 _onready_whereami:function() {
-	console.log('whereami',window.whereami);
-//	this.api = window.whereami;
-	
+	console.log('whereami', this.api);
 	this._passport = new ModulePassport('mod-passport');
-	this._passport.update();
-	//return this._passport = new ModulePassport('mod-passport');
-	//console.log(window.whereami.contractor());
-	//console.log(window.whereami.territory());
-	//Date.offset = window.whereami.timeoffset();
-	//console.log(XHR.token);
-
 	//new playlistLoader(this._onready_playlist.bind(this), function(){});
 },
 _onready_playlist: function(data) {
@@ -46,11 +37,11 @@ drop: function() {
 	localStorage.removeItem('app.account');
 	console.log('drop authtoken', cookie.get('token'));
 
-	var sc = window.database.storage('channels');
-	sc.clean(function(success,count){console.log('drop channels:', success?'success':'failure', count)});
-
 	localStorage.removeItem('app.whereami');
 	console.log('drop whereami:', localStorage.getItem('app.whereami')===null ? 'success' : 'failure');
+
+	var sc = window.database.storage('channels');
+	sc.clean(function(success,count){console.log('drop channels:', success?'success':'failure', count)});
 },
 init: function(channels) {
 	//console.log(this.api);

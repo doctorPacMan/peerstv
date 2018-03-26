@@ -39,6 +39,9 @@ hr {
 	border-bottom: 0px solid red;
 	margin: 17px 0px 18px;
 }
+s, u {
+	text-decoration: none;
+}
 button {
 	border: 0px solid whitesmoke;
 	outline: 0;
@@ -84,6 +87,12 @@ section {
 	width: 360px;
 	background: rgba(53,53,53,.75);
 	box-shadow: 0 0 0 1px rgba(253,253,253,.25);
+	transition: right .25s linear 0s;
+}
+section.hddn {
+	opacity: .250;
+	right: -360px;
+	box-shadow: none;
 }
 section > h2,
 section > div {position: relative}
@@ -93,9 +102,17 @@ section > h2 {
 	background: rgba(53,53,53,1);
 	border-bottom: 1px solid rgba(200,200,200,.005);
 	box-shadow: 0 0 12px rgba(0,0,0,.5);
-	padding: 11px 8px 12px;
+	padding: 1px 1px 0;
+	height: 46px;
 }
 section > h2 + div {height: calc(100% - 48px)}
+section > h2 > u {
+	text-shadow: 0 -1px 0px black;
+	text-decoration: none;
+	display: inline-block;
+	margin: 10px 0 0 8px;
+}
+
 section > div {
 	width: 100%;
 	height: 100%;
