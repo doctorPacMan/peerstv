@@ -108,6 +108,10 @@ thiz: function() {
 		enumerable: true,
 		value: this.authorize.bind(this)
 	});
+	Object.defineProperty(thiz, 'get_account', {configurable: false,
+		enumerable: true,
+		value: this.getAccount.bind(this)
+	});
 	Object.defineProperty(thiz, 'account', {configurable: false,
 		enumerable: true,
 		value: this.account.bind(this)

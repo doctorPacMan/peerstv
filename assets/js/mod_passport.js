@@ -2,14 +2,11 @@
 class ModulePassport extends AppModule {
 _constructor(){
 
-	//console.log(Array.from(arguments));
-	//console.log($App.api.account());
-	
-	//this.attachEvent('hello',function(){});
+//$App.api.get_account(function(x){console.log('AC',x)});
+
 	var section = this.section;
 	
 	var iframe = section.getElementsByTagName('iframe')[0];
-	iframe.setAttribute('src','about:blank');
 	iframe.setAttribute('allowtransparency','');
 	iframe.setAttribute('allowfullscreen','');
 	iframe.setAttribute('frameborder','0');
@@ -21,14 +18,25 @@ _constructor(){
 	iframe.addEventListener('load',this._onload.bind(this));
 	this.iframe = iframe;
 	this.iframe.classList.add('hddn');
+	//this.iframe.setAttribute('src','about:blank');
+	window.addEventListener('message',this.onmessage.bind(this));
 
 	// redirect_uri
 	var wl = window.location;
 	this._redirect = wl.protocol+'//';
 	this._redirect+= wl.host+'/auth/';
-	iframe.setAttribute('src',this._redirect);
 
-	this._N = {};
+	var apiurl = $App.api.service('auth').location;
+		apiurl += 'authorize/?response_type=code';
+		apiurl += '&client_id=demoapp';
+		apiurl += '&redirect_uri='+encodeURIComponent(this._redirect);
+	this.iframe.setAttribute('src',apiurl);
+
+	this._N = {
+		login: section.querySelector('h2 > button')
+	};
+
+	this._N.login.addEventListener('click',this.toggleAuth.bind(this));
 
 	var node = section.querySelector('#acc-territory');
 	this._N.territory = {
@@ -52,6 +60,11 @@ _constructor(){
 	this.update();
 
 	//this.open();
+}
+toggleAuth(e) {
+	var hddn = this.iframe.classList.contains('hddn');
+	this.iframe.classList[hddn?'remove':'add']('hddn');
+	this.iframe.style.display = hddn?null:'none';
 }
 _onload(e) {
 	var iframe = e.target,
@@ -85,7 +98,7 @@ onmessage(event) {
 		res = win.location.search.match(/code=([^&]+)/),
 		code = !res ? null : res[1];
 	console.log('message', code, event);
-	window.whereami.authorize(code, this._redirect);
+	$App.api.authorize(code, this._redirect);
 }
 updateProvider(data) {
 	console.log('updateProvider',data);

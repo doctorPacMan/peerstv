@@ -118,5 +118,12 @@ _setToken: function(token, expires, refresh) {
 	this._refresh_timeout = setTimeout(this._refreshAuthToken.bind(this,refresh), xt*1e3);
 	//console.log('token '+token+' timeout '+xt+'s');
 	//console.log(this.token(), this.account().token);
+},
+getAccount: function(callback) {
+	var apiurl = this.service('auth').location+'account/';
+	XHR.request(apiurl,(data)=>{
+		this.account(data);
+		callback(data);
+	});
 }
 });
