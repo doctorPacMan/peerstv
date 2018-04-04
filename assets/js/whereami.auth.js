@@ -96,6 +96,8 @@ _onloadAuthToken: function(code, data, xhr) {
 	//{"access_token":"a84946e8591aae1e95ce2ed316d8c10d","token_type":"bearer","expires_in":450,"refresh_token":"7aa467b7d73a1d35e89810a22cfa5b82"}
 	var expires = Date.current().setMilliseconds(data.expires_in * 1e3);
 	this._setToken(data.access_token, expires, data.refresh_token);
+
+	if(code) this._requestAccount();
 },
 _requestAccount: function() {
 	var apiurl = this.service('auth').location+'account/';
