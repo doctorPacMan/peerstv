@@ -14,7 +14,7 @@ account: function(data) {
 
 	var account = Object.assign({
 			id: undefined,
-			name: undefined,
+			login: undefined,
 			expires: undefined,
 			refresh: undefined,
 			token: this.token()
@@ -40,7 +40,8 @@ _authorize: function() {
 	var account = this.account(),
 		refresh = account ? account.refresh : null,
 		token = this.token();
-	console.log('authorize init', token, refresh);
+	console.log('authorize init token:'+token+' refresh:'+refresh);
+	console.log(account || ('account:'+account));
 	
 	if(token) {
 		console.log('token restore');
@@ -98,17 +99,16 @@ _onloadAuthToken: function(code, data, xhr) {
 },
 _requestAccount: function() {
 	var apiurl = this.service('auth').location+'account/';
-	XHR.request(apiurl,(data)=>{
-		console.log('account',data);
-		this.account(data);
-		this._complete();
-		$App.setAccount();
-	});
+	XHR.request(apiurl,this._onloadAccount.bind(this));
+},
+_onloadAccount: function(data) {
+	//console.log('_onloadAccount',data);
+	var account = this.account(data);
+	dispatchEvent('account/update', account);
 },
 _setToken: function(token, expires, refresh) {
 	cookie.set('token', token, expires);
 	this.account({expires:expires, refresh:refresh});
-	//this._requestAccount();
 	
 	var xd = new Date(expires),
 		xt = xd - Date.current(),
@@ -121,9 +121,6 @@ _setToken: function(token, expires, refresh) {
 },
 getAccount: function(callback) {
 	var apiurl = this.service('auth').location+'account/';
-	XHR.request(apiurl,(data)=>{
-		this.account(data);
-		callback(data);
-	});
+	XHR.request(apiurl,this._onloadAccount.bind(this));
 }
 });

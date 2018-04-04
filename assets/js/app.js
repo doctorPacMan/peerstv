@@ -2,22 +2,20 @@
 // {id: 84894, name: "doctorpacman@ya.ru", expires: 1521889230000, refresh: "01164a074881b3ef97cea324bbf14e5c", token: "30413de2557f7be16af6699727b470cf"}
 var $App = {
 initialize: function() {
-
+//return this._passport = new ModulePassport('mod-passport');
 //this.api = new Whereami();
-//this._passport = new ModulePassport('mod-passport');
-//return;
-
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
 },
 _onready_database: function(success, indb) {
 	console.log('database',window.database);
-	window.whereami = this.api = new Whereami();
-	window.whereami.onready(this._onready_whereami.bind(this));
+	this.api = new Whereami();
+	this.api.onready(this._onready_whereami.bind(this));
 },
 _onready_whereami:function() {
 	console.log('whereami', this.api);
 	this._passport = new ModulePassport('mod-passport');
+	this.api.get_account();
 	//new playlistLoader(this._onready_playlist.bind(this), function(){});
 },
 _onready_playlist: function(data) {
@@ -64,4 +62,16 @@ favor: function() {
 },
 account: function() {return this.api.account() || {}},
 token: function() {return this.api.token()}
+};
+
+// ===========================================================================================
+$App.emitter = new EventTarget();
+function attachEvent(ename,callback) {$App.emitter.addEventListener(ename,callback,false)};
+function detachEvent(ename,callback) {$App.emitter.removeEventListener(ename,callback,false)};
+function dispatchEvent(ename,data) {
+	console.log('<EVENT>',ename);
+	var data = data || {'time':Date.now()},
+		detail = Object.assign({},data),
+		event = new CustomEvent(ename, {detail:detail});
+	$App.emitter.dispatchEvent(event);
 };

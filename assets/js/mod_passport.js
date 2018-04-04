@@ -2,8 +2,6 @@
 class ModulePassport extends AppModule {
 _constructor(){
 
-//$App.api.get_account(function(x){console.log('AC',x)});
-
 	var section = this.section;
 	
 	var iframe = section.getElementsByTagName('iframe')[0];
@@ -58,7 +56,9 @@ _constructor(){
 		accid: node.querySelector('s')
 	};
 	this.update();
-
+attachEvent('account/update',function(event){
+	console.log('AU',event.detail);
+});
 	//this.open();
 }
 toggleAuth(e) {
