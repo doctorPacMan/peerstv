@@ -15,7 +15,7 @@ playlistLoader.prototype = {
 	},
 	_request: function(callback, onerror) {
 
-		var whereami = window.whereami,
+		var whereami = $App.api,
 			contractorId = whereami.contractor().contractorId,
 			appterritory = whereami.territory(),
 			serviceUserdata = whereami.service('user_data'),

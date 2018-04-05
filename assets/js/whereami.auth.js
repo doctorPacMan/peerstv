@@ -40,19 +40,18 @@ _authorize: function() {
 	var account = this.account(),
 		refresh = account ? account.refresh : null,
 		token = this.token();
-	console.log('authorize init token:'+token+' refresh:'+refresh);
-	console.log(account || ('account:'+account));
+	//console.log('authorize init token:'+token+' refresh:'+refresh);
+	//console.log(account || ('account:'+account));
+	//console.log('token restore'+(token?'restore':(refresh?'refresh':'request')));
 	
 	if(token) {
-		console.log('token restore');
 		this._setToken(token, account.expires, account.refresh);
+		this._requestAccount();
 		this._complete();
 	} else if(refresh) {
-		console.log('token refresh');
 		this._refreshAuthToken(refresh,null);
 	}
 	else {
-		console.log('token request');
 		this._requestAuthToken(null,null);
 	}
 },
@@ -88,16 +87,12 @@ _requestAuthToken: function(authcode, redirect_uri) {
 	XHR.load(apiurl, this._onloadAuthToken.bind(this,!!authcode), params);
 },
 _onloadAuthToken: function(code, data, xhr) {
-
-	//console.log('AUTH token onload', code, data);
 	if(!data) return console.error('token request failure '+xhr.status);
-	else console.log('token onload', code, data);
+	else console.log((code?'auth ':'')+'token onload', data);
 
-	//{"access_token":"a84946e8591aae1e95ce2ed316d8c10d","token_type":"bearer","expires_in":450,"refresh_token":"7aa467b7d73a1d35e89810a22cfa5b82"}
 	var expires = Date.current().setMilliseconds(data.expires_in * 1e3);
 	this._setToken(data.access_token, expires, data.refresh_token);
-
-	if(code) this._requestAccount();
+	this._requestAccount();
 },
 _requestAccount: function() {
 	var apiurl = this.service('auth').location+'account/';

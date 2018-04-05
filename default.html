@@ -38,6 +38,7 @@
 
 	<script src="assets/js/default.js"></script>
 	<script src="assets/js/app.js"></script>
+	<script src="assets/js/app.router.js"></script>
 	<script src="assets/js/app.request.js"></script>
 </head>
 <body class="win-type-body"><div>
@@ -57,16 +58,16 @@
 		<a class="conf" href=""><span>Настройки</span></a>
 		<a class="drop" onclick="$App.drop()"><span>Перезапуск</span></a>
 		</div>
-		<a class="auth" href=""><span>Авторизация</span></a>
+		<a class="auth" href="#passport"><span>Авторизация</span></a>
 	</aside>
 	
-	<section class="mod-passport" id="mod-passport">
+	<section class="mod-passport hddn" id="mod-passport">
 		<h2><u>Account</u><button>Login</button></h2>
 		<div><div>
 
 			<div class="b-territory" id="acc-territory">
 				<span>
-					<u>Новосибирск</u>
+					<u>Location</u>
 					<br>Timezone: <s>(МСК+4)</s>
 				</span>
 				<time>00:00:00</time>

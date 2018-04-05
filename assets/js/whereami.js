@@ -11,11 +11,19 @@ initialize: function(url) {
 	this._cbacks = [];
 	this._data = null;
 	this._this = null;
-
+	return this.thiz();
+	//return this._load();
+},
+init: function(callback) {
 	var wrmi = localStorage.getItem('app.whereami');//wrmi = false;
 	if(wrmi) this._onloadRegistry(JSON.parse(wrmi));
 	else XHR.whereami(this._url, this._onloadRegistry.bind(this));
-	return this.thiz();
+	return this.onready(callback);
+},
+onready: function(callback) {
+	if(this._data===null) this._cbacks.push(callback);
+	else callback();
+	return this._this;
 },
 _onloadRegistry: function(data, xhr) {
 	//console.log('whereami '+(xhr?'request':'restore'), data);
@@ -100,6 +108,10 @@ thiz: function() {
 		enumerable: true, writable: false,
 		value: this.service.bind(this)
 	});
+	Object.defineProperty(thiz, 'init', {configurable: false,
+		enumerable: false,
+		value: this.init.bind(this)
+	});
 	Object.defineProperty(thiz, 'onready', {configurable: false,
 		enumerable: false,
 		value: this.onready.bind(this)
@@ -129,11 +141,6 @@ thiz: function() {
 		get: this.data.bind(this)
 	});
 	return this._this = thiz;
-},
-onready: function(callback) {
-	if(this._data===null) this._cbacks.push(callback);
-	else callback();
-	return this._this;
 },
 _setDatetime: function(headerDate) {
 	if(headerDate) console.log('DATE', new Date(headerDate));

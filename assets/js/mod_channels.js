@@ -1,13 +1,18 @@
 "use strict";
 class ModuleChannels {
-constructor(section, channles) {
+constructor(section) {
 	var section = document.getElementById(section),
 		list = section.querySelector('div > ol');
-	console.log(section, list);
 
 	this._channels = {};
+	this._list = list;
+	return console.log(section, list);
+
+}
+update(playlist) {
+	//console.log(playlist);
 	var df = document.createDocumentFragment();
-	channles.forEach(cha => {
+	playlist.forEach(cha => {
 		var id = cha.channelId,
 			li = document.createElement('li'),
 			cn = this.channelNode(cha);
@@ -16,7 +21,7 @@ constructor(section, channles) {
 		this._channels[id] = cha;
 		this._channels[id]['node'] = cn;
 	});
-	list.appendChild(df);
+	this._list.appendChild(df);
 }
 channelNode(cha) {
 	var node = document.createElement('a'),
@@ -36,7 +41,7 @@ channelNode(cha) {
 }
 click(cnid, event) {
 	if(event) event.preventDefault();
-	
+/*	
 	var cha = this._channels[cnid],
 		fvr = !!cha.is_favourite;
 	console.log(cnid, cha.title, !!cha.is_favourite);
@@ -48,5 +53,6 @@ click(cnid, event) {
 		//console.log('cha',cha);
 		cha.node.classList[itemNew.is_favourite?'add':'remove']('starred');
 	});
+*/
 }
 };
