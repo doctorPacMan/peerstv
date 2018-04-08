@@ -2,17 +2,20 @@
 // {id: 84894, name: "doctorpacman@ya.ru", expires: 1521889230000, refresh: "01164a074881b3ef97cea324bbf14e5c", token: "30413de2557f7be16af6699727b470cf"}
 var $App = {
 initialize: function() {
-	this._passport = new ModulePassport('mod-passport');
-	this._channels = new ModuleChannels('mod-channels');
+	window.UWP = location.protocol=='ms-appx:' ? location.host : false;
 
+	this.emitter = eventEmitter();
+	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
+	this._passport = new ModulePassport('mod-passport');
+	this._schedule = new ModuleSchedule('mod-schedule');
+return this._schedule.update();
+	this._channels = new ModuleChannels('mod-channels');
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
 },
 _onready_database: function(success, indb) {
 	console.log('database',window.database);
-
 	//this._passport = new ModulePassport('mod-passport');
-
 	this.api = new Whereami();
 	this.api.init(this._onready_whereami.bind(this));
 },
@@ -24,7 +27,9 @@ _onready_whereami:function() {
 },
 _onready_playlist: function(data) {
 	console.log('playlist', data.length);
+	this.channels = data;
 	this._channels.update(data);
+	this._schedule.update();
 	//this.init(data);
 },
 drop: function() {
@@ -52,13 +57,11 @@ setAuthToken: function() {
 	console.log('Set token:', token);
 	XHR.token = token;
 },
-setAccount: function() {
-/*
-	var account = this.account();
-	console.log('Set account:', account);
-	if(!account.anon && false) {
-	}
-*/
+playChannel: function(cnid) {
+	var cha = this.channels.find(v=>{return cnid==v.channelId}),
+		source = cha.sources[0];
+	console.log('playChannel', cnid, source.src);
+	this._tvplayer.play(source.src);
 },
 favor: function() {
 	this.request.archive(function(data){console.log('ARH',data)});
@@ -66,16 +69,4 @@ favor: function() {
 },
 account: function() {return this.api.account() || {}},
 token: function() {return this.api.token()}
-};
-
-// ===========================================================================================
-$App.emitter = new EventTarget();
-function attachEvent(ename,callback) {$App.emitter.addEventListener(ename,callback,false)};
-function detachEvent(ename,callback) {$App.emitter.removeEventListener(ename,callback,false)};
-function dispatchEvent(ename,data) {
-	//console.log('<EVENT>',ename);
-	var data = data || {'time':Date.now()},
-		detail = Object.assign({},data),
-		event = new CustomEvent(ename, {detail:detail});
-	$App.emitter.dispatchEvent(event);
 };

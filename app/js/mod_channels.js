@@ -33,7 +33,8 @@ channelNode(cha) {
 	node.appendChild(name);
 	node.appendChild(star);
 	node.setAttribute('href','#'+cha.apid);
-	star.addEventListener('click',this.click.bind(this,cha.channelId));
+	node.addEventListener('click',this.click.bind(this,cha.channelId));
+	//star.addEventListener('click',this.click.bind(this,cha.channelId));
 	name.innerText = cha.title || '#'+cha.channelId;
 	if(cha.logoURL) logo.setAttribute('src',cha.logoURL);
 	if(cha.is_favourite) node.classList.add('starred');
@@ -41,6 +42,7 @@ channelNode(cha) {
 }
 click(cnid, event) {
 	if(event) event.preventDefault();
+	$App.playChannel(cnid);
 /*	
 	var cha = this._channels[cnid],
 		fvr = !!cha.is_favourite;

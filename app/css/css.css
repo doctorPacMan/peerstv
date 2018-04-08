@@ -2,9 +2,14 @@
 @import url("normalize.css");
 @import url("appstyles.css");
 @import url("sidebar.css");
+@import url("mod_tvplayer.css");
 @import url("mod_channels.css");
 @import url("mod_schedule.css");
 @import url("mod_passport.css");
+@media all and (orientation:landscape) or (orientation:portrait)
+{
+    /* styles here */
+}
 
 /*
 @import url("appstyles.css");

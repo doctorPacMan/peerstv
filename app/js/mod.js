@@ -3,7 +3,8 @@ class AppModule {
 constructor(section) {
 	var args = Array.from(arguments);
 	this.section = document.getElementById(args.shift());
-	this.header = this.section.querySelector(':scope > h2');
+	//this.header = this.section.querySelector(':scope > h2');
+	this.header = this.section.querySelector('h2');
 
 	var close = document.createElement('del');
 	if (!this.header.firstChild) this.header.appendChild(close);

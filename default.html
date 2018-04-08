@@ -7,41 +7,55 @@
 	<meta http-equiv="cleartype" content="on">
 	<meta name="mobile-web-app-capable" content="yes">
 	<title>Peers.TV UWP</title>
-	<link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+	<link rel="icon" type="image/png" href="/app/img/favicon.png" />
 	<!-- Ссылки WinJS -->
 	<!-- <link href="WinJS/css/ui-dark.css" rel="stylesheet" /> -->
 	<script src="WinJS/js/base.js"></script>
 	<!-- <script src="WinJS/js/ui.js"></script> -->
 
 	<!-- Ссылки Winapp -->
-	<link href="assets/css/css.css" rel="stylesheet" />
+	<link href="app/css/css.css" rel="stylesheet" type="text/css" />
+
+	<script src="app/js/utils.js"></script>
+	<script src="app/js/ajax.js"></script>
+	<script src="app/js/date.js"></script>
+	<script src="app/js/timer.js"></script>
+	<script src="app/js/cookie.js"></script>
+
+	<script src="app/hls.light.min.js"></script>
+	<script src="app/tvplayer/tvplayer.js"></script>
+
+	<script src="app/js/database.js"></script>
+	<script src="app/js/storage.js"></script>
+	<script src="app/js/storage_channels.js"></script>
+
+	<script src="app/js/whereami.js"></script>
+	<script src="app/js/whereami.auth.js"></script>
+	<script src="app/js/whereami.iptv.js"></script>
 	
-	<script src="assets/js/ajax.js"></script>
-	<script src="assets/js/date.js"></script>
-	<script src="assets/js/timer.js"></script>
-	<script src="assets/js/cookie.js"></script>
+	<script src="app/js/playlistM3U8.js"></script>
+	<script src="app/js/playlist.js"></script>
 
-	<script src="assets/js/database.js"></script>
-	<script src="assets/js/storage.js"></script>
-	<script src="assets/js/storage_channels.js"></script>
+	<script src="app/js/tvshow.js"></script>
 
-	<script src="assets/js/whereami.js"></script>
-	<script src="assets/js/whereami.auth.js"></script>
-	<script src="assets/js/whereami.iptv.js"></script>
-	
-	<script src="assets/js/playlistM3U8.js"></script>
-	<script src="assets/js/playlist.js"></script>
+	<script src="app/js/mod.js"></script>
+	<script src="app/js/mod_channels.js"></script>
+	<script src="app/js/mod_passport.js"></script>
+	<script src="app/js/mod_tvplayer.js"></script>
+	<script src="app/js/mod_schedule.js"></script>
 
-	<script src="assets/js/mod.js"></script>
-	<script src="assets/js/mod_channels.js"></script>
-	<script src="assets/js/mod_passport.js"></script>
-
-	<script src="assets/js/default.js"></script>
-	<script src="assets/js/app.js"></script>
-	<script src="assets/js/app.router.js"></script>
-	<script src="assets/js/app.request.js"></script>
+	<script src="app/js/default.js"></script>
+	<script src="app/js/app.js"></script>
+	<script src="app/js/app.router.js"></script>
+	<script src="app/js/app.request.js"></script>
 </head>
 <body class="win-type-body"><div>
+	
+	<div class="mod-tvplayer" id="mod-tvplayer">
+		<div class="tvplayer" id="tvplayer">
+		</div>
+	</div>
+	
 	<aside>
 		<div>
 		<a class="favr" onclick="$App.favor()" href="#favourites"><span>Избранное</span></a>
@@ -86,8 +100,13 @@
 				<time>00:00</time>
 			</div>
 
+			<div class="b-odevice" id="device-info">
+				<p>User agent: <span>UA</span></p>
+				<p>Screen size: <span>640x480</span></p>
+			</div>
+
 		</div></div>
-		<iframe src="about:blank" class="hddn" style="display:none"></iframe>
+		<iframe src="about:blank" style="display:none"></iframe>
 	</section>
 
 	<section class="mod-schedule" id="mod-schedule">

@@ -92,6 +92,7 @@ _onloadAuthToken: function(code, data, xhr) {
 
 	var expires = Date.current().setMilliseconds(data.expires_in * 1e3);
 	this._setToken(data.access_token, expires, data.refresh_token);
+	this._complete();
 	this._requestAccount();
 },
 _requestAccount: function() {

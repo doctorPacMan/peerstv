@@ -93,6 +93,7 @@ section.hddn {
 	opacity: .250;
 	right: -360px;
 	box-shadow: none;
+	display: none;
 }
 section > h2,
 section > div {position: relative}
@@ -120,12 +121,15 @@ section > div {
 	overflow: hidden;
 	overflow-y: scroll;
 }
-/* Scrollbars - Opera:15 Edge:16 FF:17 Chrome:17 */
+/* Scrollbars - Opera:15 Edge:16 FF:17 Chrome:17
+fix by utils.js fixScrollbarOffset()
+*/
 section > div {padding-right: 20px}
-section > div > div {width: calc(100% + 17px)}
+section > div > div {}
 section > div > div {
 	box-sizing: border-box;
 	box-shadow: inset 0 0 0 0px cyan;
 	overflow: hidden;
 	min-height: 100%;
+	width: calc(100% + 17px);
 }

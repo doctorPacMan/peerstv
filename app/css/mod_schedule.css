@@ -1,9 +1,5 @@
 .mod-schedule {
-/*
-	right: auto;
-	left: 500px;
-*/
-	width: 480px;
+	width: 360px;
 	background: rgba(53,53,53,.95);
 }
 .schedule,

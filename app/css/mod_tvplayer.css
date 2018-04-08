@@ -1,0 +1,25 @@
+.mod-tvplayer {
+	position: absolute;
+	top:0px;left: 48px;
+	bottom:0px;right:0;
+	box-shadow: inset 0 0 0px 1px cyan;
+	padding: 1px;
+	right: 360px;
+	left: 302px;
+}
+.tvplayer {
+	position: relative;
+	left:0;width: 100%;
+	top:0;height: 100%;
+}
+.tvplayer > video {
+	display: block;
+	position:relative;
+	left:0;width:100%;
+	top:0;height:100%;
+	background: rgba(0,0,50,.75);
+	object-fit: none;
+	object-fit: fill;
+	object-fit: cover;
+	object-fit: contain;
+}

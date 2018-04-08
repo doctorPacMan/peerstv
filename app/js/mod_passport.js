@@ -15,19 +15,22 @@ _constructor(){
 	iframe.setAttribute('id',iframe.getAttribute('name'));
 	iframe.addEventListener('load',this._onload.bind(this));
 	this.iframe = iframe;
-	this.iframe.classList.add('hddn');
-	//this.iframe.setAttribute('src','about:blank');
 	window.addEventListener('message',this.onmessage.bind(this));
 
 	// redirect_uri
+	// ms-appx-web:///auth/index.html
 	var wl = window.location;
 	this._redirect = wl.protocol+'//';
 	this._redirect+= wl.host+'/auth/';
 
+	iframe.style.display = null;
+	this.iframe.classList.add('hddn');
+	this.iframe.setAttribute('src',this._redirect);
+	//this.iframe.setAttribute('src','about:blank');
+
 	this._N = {
 		login: section.querySelector('h2 > button')
 	};
-
 	this._N.login.addEventListener('click',this.toggleAuth.bind(this));
 
 	var node = section.querySelector('#acc-territory');
@@ -52,6 +55,27 @@ _constructor(){
 	//this.update();
 	attachEvent('account/update',this.onAccountUpdate.bind(this));
 	//this.open();
+
+	var node = section.querySelector('#device-info');
+	this._N.device = {
+		uagent: node.querySelector('p:nth-child(1) span'),
+		screen: node.querySelector('p:nth-child(2) span')
+	};
+	this.updateDeviceInfo();
+}
+updateDeviceInfo() {
+	var r = window.devicePixelRatio,
+		sw = window.screen.width,
+		sh = window.screen.height,
+		//ah = window.screen.availHeight,
+		//aw = window.screen.availWidth,
+		dw = document.body.offsetWidth,
+		dh = document.body.offsetHeight;
+	this._N.device.screen.innerText = sw+'x'+sh+'('+r+') '+dw+'x'+dh;
+
+	var ua = window.navigator.userAgent
+	this._N.device.uagent.innerText = ua;
+	//console.log(sw+'x'+sh+' ('+r+')');
 }
 toggleAuth(e) {
 
@@ -70,9 +94,9 @@ _onload(e) {
 		win = iframe.contentWindow,
 		doc, loc;
 
-	try{doc = iframe.contentDocument || win.document}
-	catch(e){'document blocked'};
-	loc = doc ? doc.location.href : null;
+	//try{doc = iframe.contentDocument || win.document}
+	//catch(e){'document blocked'};
+	//loc = doc ? doc.location.href : null;
 	//console.log('onload '+(loc?'loc':'src'),(loc || iframe.src));
 }
 open() {
@@ -98,6 +122,7 @@ onmessage(event) {
 		code = !res ? null : res[1];
 	console.log('message', code, event);
 	$App.api.authorize(code, this._redirect);
+	this.iframe.classList.add('hddn');
 }
 updateProvider(data) {
 	//console.log('updateProvider',data);

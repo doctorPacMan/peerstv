@@ -18,6 +18,13 @@ Date.current = function() {
    	return date;
 };
 
+Date.json = function(json) {
+	var date = new Date();
+	date.setFullYear(json.year,json.month-1,json.day);
+	date.setHours(json.hour,json.minute,json.second);
+   	return date;
+};
+
 Date.prototype.setLocale = function(locale) {
 	locale = locale || 'ru';
 	return Date.prototype._locale = locale;
