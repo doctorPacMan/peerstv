@@ -7,9 +7,10 @@ function eventEmitter() {
 	window.detachEvent = function(ename,callback) {emitter.removeEventListener(ename,callback,false)};
 	window.dispatchEvent = function(ename,data) {
 		//console.log('<EVENT>',ename);
-		var data = data || {'time':Date.now()},
-			detail = Object.assign({},data),
-			event = new CustomEvent(ename, {detail:detail});
+		var data = data || {'time':Date.now()}, detail = data;
+		if(typeof(data)=='object') detail = Object.assign({},data);
+		
+		var event = new CustomEvent(ename, {detail:detail});
 		emitter.dispatchEvent(event);
 	};	
 	return emitter;

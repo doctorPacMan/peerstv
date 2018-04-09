@@ -15,11 +15,13 @@ constructor(json) {
 		//this.dura = json.duration;
 		this.ends = new Date(this.time.getTime() + json.duration*1e3);
 	}
+
+	var now = Date.current();
+	if(this.ends<now) this.state = 'PAST';
+	else if(this.time<now) this.state = 'LIVE';
+	else this.state = 'SOON';
 	//this._state;
 }
-set state(st) {
-	//'SOON'|'PAST'|'LIVE';
-	this._state	= st;
-}
+set state(st) {this._state = st}
 get state() {return this._state}
 };

@@ -8,7 +8,7 @@ initialize: function() {
 	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
 	this._passport = new ModulePassport('mod-passport');
 	this._schedule = new ModuleSchedule('mod-schedule');
-return this._schedule.update();
+//return this._schedule.update();
 	this._channels = new ModuleChannels('mod-channels');
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
@@ -62,6 +62,8 @@ playChannel: function(cnid) {
 		source = cha.sources[0];
 	console.log('playChannel', cnid, source.src);
 	this._tvplayer.play(source.src);
+	//this._schedule.load(cnid);
+	dispatchEvent('channel/play',cnid);
 },
 favor: function() {
 	this.request.archive(function(data){console.log('ARH',data)});
