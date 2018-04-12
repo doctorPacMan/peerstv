@@ -23,20 +23,6 @@
 }
 .mod-passport iframe.hddn {bottom: -100%}
 
-.mod-passport > h2 del {
-	width: 36px;
-	height: 36px;
-	margin: 5px 0px 0 0;
-	float: right;
-	font: 20px/36px 'Segoe';
-	text-decoration: none;
-	text-align: center;
-	color: darkgray;
-	text-shadow: 0 -1px 0px black;
-	background: rgba(200,200,200,.0);
-}
-.mod-passport > h2 del:before {content: '\E711'}
-.mod-passport > h2 del:hover {background: rgba(200,200,200,.125)}
 .mod-passport > h2 button {
 	msdisplay: inline-block;
 	vertical-align: middle;

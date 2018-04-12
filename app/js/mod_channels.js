@@ -1,12 +1,11 @@
 "use strict";
-class ModuleChannels {
-constructor(section) {
-	var section = document.getElementById(section),
-		list = section.querySelector('div > ol');
+class ModuleChannels extends AppModule {
+_constructor() {
+	var list = this.section.querySelector('div > ol');
 
 	this._channels = {};
 	this._list = list;
-	return console.log(section, list);
+	//return console.log(section, list);
 
 }
 update(playlist) {

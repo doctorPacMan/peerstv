@@ -9,27 +9,38 @@ aside {
 	overflow: hidden;
 	transition: width .25s .5s ease;
 }
-aside:hover {width:190px}
+asidex:hover {width:190px}
 aside > div:nth-child(2) {
 	margin: 12px 0;
 	padding: 11px 0;
 	border: 0px solid gray;
 	border-width: 1px 0;
 }
-aside a,
-aside a:link,
-aside a:visited {
+aside a {
 	display: block;
 	width: 166px;
 	font-size: 87.5%;
 	line-height: 24px;
-	text-decoration: none;
-	padding: 12px 12px;
+	padding: 12px 9px;
 	overflow: hidden;
 	white-space: nowrap;
+	border: 0 solid transparent;
+	border-width: 0 3px;
+	transition: border-color .15s ease 0s,
+				background .15s linear 0s;
+}
+aside a:link,
+aside a:visited {
+	text-decoration: none;
 	color: darkgray;
 }
+
+aside a + a {margin-top: 2px}
 aside a:hover {background-color: rgba(255,255,255,.125)}
+aside a.visible {
+	background-color: rgba(255,255,255,.18);
+	border-left-color: rgb(60,120,200);
+}
 aside a span {
 	float: left;
 	margin-left: 12px;
@@ -47,6 +58,7 @@ aside a:before {
 }
 aside a.favr:before {content:'\E728'}
 aside a.list:before {content:'\E7F4'}
+aside a.schd:before {content:'\E8FD'}
 aside a.cams:before {content:'\E714'}
 aside a.live:before {content:'\E93E'}
 aside a.pops:before {content:'\E8E1'}

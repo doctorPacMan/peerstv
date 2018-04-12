@@ -6,12 +6,15 @@ initialize: function() {
 
 	this.emitter = eventEmitter();
 	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
-	this._passport = new ModulePassport('mod-passport');
-	this._schedule = new ModuleSchedule('mod-schedule');
-//return this._schedule.update();
-	this._channels = new ModuleChannels('mod-channels');
-	window.database = new Database('database',1).open();
-	window.database.onready(this._onready_database.bind(this));
+
+	this.moduleRegister('schedule',new ModuleSchedule('mod-schedule'));
+	this.moduleRegister('passport',new ModulePassport('mod-passport'));
+	this.moduleRegister('channels',new ModuleChannels('mod-channels'));
+
+	attachEvent('module/toggle',this.onModuleToggle.bind(this));
+
+	//window.database = new Database('database',1).open();
+	//window.database.onready(this._onready_database.bind(this));
 },
 _onready_database: function(success, indb) {
 	console.log('database',window.database);
@@ -70,5 +73,34 @@ favor: function() {
 	this.request.favourites(function(data){console.log('FVR',data)});
 },
 account: function() {return this.api.account() || {}},
-token: function() {return this.api.token()}
+token: function() {return this.api.token()},
+mod: function(id) {
+	return this._mods[id];
+},
+moduleRegister: function(apid, mod) {
+	if(!this._mods) this._mods = {};
+	var aside = document.querySelector('body > div > aside'),
+		btn = aside.querySelector('a[data-section="'+apid+'"]');
+	mod.apid = apid;
+	console.log('reg', apid, mod);
+	console.log('reg', apid, btn);
+	if(btn) {
+		btn.onclick = mod.toggle.bind(mod);
+		btn.classList[mod.hidden?'remove':'add']('visible');
+	}
+	this._mods[apid] = {
+		module: mod,
+		button: btn
+	};
+},
+onModuleToggle:function(e){
+	var apid = e.detail;
+	var mod = this.mod(apid);
+	if(mod.button) mod.button.classList[mod.module.hidden?'remove':'add']('visible');
+	console.log(apid, !mod.module.hidden, mod);
+},
+toggleModule: function(id) {
+	var mod = this.mod(id);
+	console.log('toggleModule', id, !mod.module.hidden);
+}
 };

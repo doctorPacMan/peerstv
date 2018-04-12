@@ -113,6 +113,20 @@ section > h2 > u {
 	display: inline-block;
 	margin: 10px 0 0 8px;
 }
+section > h2 del {
+	width: 36px;
+	height: 36px;
+	margin: 5px 0px 0 0;
+	float: right;
+	font: 20px/36px 'Segoe';
+	text-decoration: none;
+	text-align: center;
+	color: darkgray;
+	text-shadow: 0 -1px 0px black;
+	background: rgba(200,200,200,.0);
+}
+section > h2 del:before {content: '\E711'}
+section > h2 del:hover {background: rgba(200,200,200,.125)}
 
 section > div {
 	width: 100%;

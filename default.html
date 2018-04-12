@@ -59,20 +59,23 @@
 	<aside>
 		<div>
 		<a class="favr" onclick="$App.favor()" href="#favourites"><span>Избранное</span></a>
-		<a class="list" href=""><span>Все каналы</span></a>
+		<a class="list" data-section="channels"><span>Все каналы</span></a>
+		<a class="schd" data-section="schedule"><span>Программа</span></a>
 		<a class="cams" href=""><span>Перекрёстки</span></a>
 		</div>
-		<div>
+		<!-- div>
 		<a class="live" href=""><span>Сейчас в эфире</span></a>
 		<a class="pops" href=""><span>Популярное</span></a>
 		<a class="coll" href=""><span>Подборки</span></a>
 		<a class="news" href=""><span>Новости дня</span></a>
-		</div>
+		</div -->
 		<div>
 		<a class="conf" href=""><span>Настройки</span></a>
 		<a class="drop" onclick="$App.drop()"><span>Перезапуск</span></a>
 		</div>
-		<a class="auth" href="#passport"><span>Авторизация</span></a>
+		<div>
+		<a class="auth" data-section="passport"><span>Авторизация</span></a>
+		</div>
 	</aside>
 	
 	<section class="mod-passport hddn" id="mod-passport">
