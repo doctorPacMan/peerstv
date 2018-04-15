@@ -3,7 +3,7 @@ class Tvplayer {
 constructor(container) {
 
 	this._hls_type = this.hlsPlayType();
-	console.log('Tvplayer',this._hls_type);
+	//console.log('Tvplayer', this._hls_type || 'hlsjs');
 
 	var container = document.getElementById(container);
 	this._video = this.createVideoElement();
@@ -12,7 +12,7 @@ constructor(container) {
 	var play = this.load.bind(this,'//www.cn.ru/data/files/test/countdown.mp4',false);
 	//var play = this.play.bind(this,'http://online.video.rbc.ru/online/rbctv_480p/index.m3u8');
 	//var play = this.play.bind(this,'http://hls.novotelecom.ru/streaming/cam_lunintsev_sq/16/camv/playlist.m3u8');
-	setTimeout(play,300);
+	//setTimeout(play,300);
 }
 hlsPlayType() {
 	var cp = false, vp = document.createElement('video'),

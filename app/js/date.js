@@ -7,8 +7,6 @@ iDate.prototype = {
     	return date;
 	}
 };
-// ISO8601 new Date('1998-02-01T00:00:00+07:00');
-// RFC2822 new Date('Sun Feb 01 1998 00:00:00 GMT+0700');
 Date.prototype.timeoffset = 0;
 Date.current = function() {
 	var offset = (Date.prototype.timeoffset || 0),
@@ -21,13 +19,33 @@ Date.current = function() {
 Date.json = function(json) {
 	var date = new Date();
 	date.setFullYear(json.year,json.month-1,json.day);
-	date.setHours(json.hour,json.minute,json.second);
+	date.setHours(json.hour,json.minute,json.second,0);
    	return date;
 };
+Date.prototype.iso = function() {
+// ISO8601 new Date('1998-02-01T00:00:00+07:00');
+	var offset = this.getTimezoneOffset(),
+		tzs = Math.abs(offset),
+		tzh = Math.ceil(tzs/60),
+		tzm = (tzs%60);
 
-Date.prototype.setLocale = function(locale) {
-	locale = locale || 'ru';
-	return Date.prototype._locale = locale;
+	var tz = (offset<0 ? '+' : '-')+(tzh<10?'0'+tzh:tzh)+':'+(tzm<10?'0'+tzm:tzm);
+	return this.format('yyyy-mm-ddTh:nn:ss') + tz;
+};
+Date.prototype.rfc = function() {
+// RFC2822 new Date('Sun Feb 01 1998 00:00:00 GMT+0700');
+	var dw = this.getNames(this.getDay(),'day_abbr','en'),
+		dm = this.getNames(this.getMonth(),'short','en'),
+		offset = this.getTimezoneOffset(),
+		tzs = Math.abs(offset),
+		tzh = Math.ceil(tzs/60),
+		tzm = (tzs%60);
+
+	var tz = (offset<0 ? '+' : '-') + (tzh<10?'0'+tzh:tzh) + (tzm<10?'0'+tzm:tzm);
+	return dw+' '+dm+' '+this.format('dd yyyy h:nn:ss')+' GMT' + tz;
+	//var o = {hour12:false,weekday:'short',year:'numeric',month:'short'};
+	//console.log(this.toLocaleString('en-US',o));
+	//console.log(this.toLocaleString('ru-RU',o));
 };
 Date.prototype.getNames = function(n, t, l) {
 	var names = {
@@ -48,7 +66,7 @@ Date.prototype.getNames = function(n, t, l) {
 				day_full: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 			}
 		},
-		l = l || this._locale || 'ru';
+		l = l || (navigator.language==='ru-RU'?'ru':'en'),
 		n = typeof(n)=='number' ? n : 0,
 		t = names[l][t] ? t : 'short';
 	return names[l][t][n];

@@ -10,30 +10,35 @@ initialize: function() {
 	this.moduleRegister('schedule',new ModuleSchedule('mod-schedule'));
 	this.moduleRegister('passport',new ModulePassport('mod-passport'));
 	this.moduleRegister('channels',new ModuleChannels('mod-channels'));
-
 	attachEvent('module/toggle',this.onModuleToggle.bind(this));
-
-	//window.database = new Database('database',1).open();
-	//window.database.onready(this._onready_database.bind(this));
+	//return;
+	window.database = new Database('database',1).open();
+	window.database.onready(this._onready_database.bind(this));
 },
 _onready_database: function(success, indb) {
 	console.log('database',window.database);
-	//this._passport = new ModulePassport('mod-passport');
 	this.api = new Whereami();
 	this.api.init(this._onready_whereami.bind(this));
 },
 _onready_whereami:function() {
 	console.log('whereami', this.api);
-	this.router.initialize();
-	this._passport.update();
+	dispatchEvent('whereami');
+//return;	
 	new playlistLoader(this._onready_playlist.bind(this), function(){});
 },
 _onready_playlist: function(data) {
 	console.log('playlist', data.length);
 	this.channels = data;
-	this._channels.update(data);
-	this._schedule.update();
-	//this.init(data);
+	this.mod('passport').module.update();
+	this.mod('channels').module.update(data);
+	this.mod('schedule').module.update();
+	this.router.initialize();
+},
+init: function(channels) {
+	//console.log(this.api);
+	//console.log(this.api.token());
+	//console.log(this.api.contractor());
+	//console.log(this.api.territory());
 },
 drop: function() {
 	console.log('DROP');
@@ -49,24 +54,41 @@ drop: function() {
 	var sc = window.database.storage('channels');
 	sc.clean(function(success,count){console.log('drop channels:', success?'success':'failure', count)});
 },
-init: function(channels) {
-	//console.log(this.api);
-	//console.log(this.api.token());
-	//console.log(this.api.contractor());
-	//console.log(this.api.territory());
-},
 setAuthToken: function() {
 	var token = this.token();
 	console.log('Set token:', token);
 	XHR.token = token;
 },
+getTelecastById: function(id) {
+	return null;
+},
+getChannel: function(apid) {
+	return this.channels.find(v=>{return apid==v.apid});
+},
+getChannelById: function(cnid) {
+	return this.channels.find(v=>{return cnid==v.channelId});
+},
+loadChannel: function(apid) {
+	var cha = this.channels.find(v=>{return apid==v.apid}),
+		source = cha.sources[0];
+	console.log('loadChannel', cha);
+	this._tvplayer.load(source.src);
+	dispatchEvent('channel/load',apid);
+	return;
+},
 playChannel: function(cnid) {
-	var cha = this.channels.find(v=>{return cnid==v.channelId}),
+	var cha = this.getChannelById(cnid),
 		source = cha.sources[0];
 	console.log('playChannel', cnid, source.src);
 	this._tvplayer.play(source.src);
 	//this._schedule.load(cnid);
+	this.router.location(cha.apid);
 	dispatchEvent('channel/play',cnid);
+},
+playTelecast: function(id) {
+	console.log('playTelecast',id);
+	dispatchEvent('telecast/play',id);
+	this._tvplayer.view(id);
 },
 favor: function() {
 	this.request.archive(function(data){console.log('ARH',data)});
@@ -82,8 +104,8 @@ moduleRegister: function(apid, mod) {
 	var aside = document.querySelector('body > div > aside'),
 		btn = aside.querySelector('a[data-section="'+apid+'"]');
 	mod.apid = apid;
-	console.log('reg', apid, mod);
-	console.log('reg', apid, btn);
+	//console.log('reg', apid, mod);
+	//console.log('reg', apid, btn);
 	if(btn) {
 		btn.onclick = mod.toggle.bind(mod);
 		btn.classList[mod.hidden?'remove':'add']('visible');

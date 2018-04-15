@@ -104,6 +104,10 @@ thiz: function() {
 		enumerable: true, writable: false,
 		value: this.contractor.bind(this)
 	});
+	Object.defineProperty(thiz, 'medialocator', {configurable: false,
+		enumerable: true, writable: false,
+		value: this.medialocator.bind(this)
+	});
 	Object.defineProperty(thiz, 'service', {configurable: false,
 		enumerable: true, writable: false,
 		value: this.service.bind(this)
@@ -177,6 +181,21 @@ iptv: function() {
 		list.push({cid:cid, src:src});
 	});
 	return list;
+},
+medialocator: function(cid) {
+	var svitems = {},
+		service = this._data.services.filter(s=>{return s.type == 'media_locator'}),
+		locator = service.find(s=>{return cid==s.contractor.contractorId});
+	return locator.apiVersions[0].location;
+	locator.forEach(s=>{
+		var cid = s.contractor.contractorId,
+			apv = s.apiVersions[0];
+		svitems[cid] = apv.location;
+	});
+
+	var loc = locator.find(s=>{return cid==s.contractor.contractorId});
+	console.log(cid, loc)
+	return svitems;
 },
 service: function(type) {
 

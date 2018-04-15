@@ -1,6 +1,9 @@
-.mod-schedule {
+section.mod-schedule {
 	width: 360px;
 	background: rgba(53,53,53,.95);
+}
+section.mod-schedule > h2 + nav + div {
+	height: calc(100% - 96px);
 }
 .schedule,
 .schedule > li {
@@ -92,3 +95,36 @@
 .schedule > li.past {color: rgb(160,160,160)}
 
 */
+.progdays {
+	height: 48px;
+	overflow: hidden;
+}
+.progdays > div {
+	display: flex;
+	flex-flow: row nowrap;
+	height: 100%;
+	padding-bottom: 20px;
+	overflow: hidden;
+	overflow-x: scroll;
+}
+.progdays > div > time {
+	display: block;
+	background: black;
+	min-width: 48px;
+	margin-left: 1px;
+	text-align: center;
+	white-space: pre-line;
+	font-size: 12px;
+	padding: 5px 0 0;
+	height: 43px;
+}
+.progdays > div > time:first-child {margin-left:0}
+.progdays > div > time:first-line {
+	font-size: 16px;
+}
+.progdays > div > time.tday {
+	font-weight: bold;
+}
+.progdays > div > time.crnt {
+	background-color: rgb(60,120,200);
+}

@@ -5,20 +5,23 @@ _constructor() {
 
 	this._channels = {};
 	this._list = list;
+	attachEvent('channel/load',this.onChannelView.bind(this));
 	//return console.log(section, list);
-
 }
 update(playlist) {
 	//console.log(playlist);
 	var df = document.createDocumentFragment();
 	playlist.forEach(cha => {
 		var id = cha.channelId,
+			id = cha.apid,
 			li = document.createElement('li'),
 			cn = this.channelNode(cha);
 		li.appendChild(cn);
 		df.appendChild(li);
-		this._channels[id] = cha;
+		this._channels[id] = {};
 		this._channels[id]['node'] = cn;
+		this._channels[id]['cont'] = li;
+		if(id=='sts') console.log(cha);
 	});
 	this._list.appendChild(df);
 }
@@ -55,5 +58,12 @@ click(cnid, event) {
 		cha.node.classList[itemNew.is_favourite?'add':'remove']('starred');
 	});
 */
+}
+onChannelView(e) {
+	var cha = $App.getChannel(e.detail),
+		id = cha.apid,
+		cont = this._channels[id]['node'].parentNode;
+	//console.log('onChannelView',cha);
+	console.log('onChannelView',cont);
 }
 };

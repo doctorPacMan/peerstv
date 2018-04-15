@@ -87,9 +87,13 @@ section {
 	width: 360px;
 	background: rgba(53,53,53,.75);
 	box-shadow: 0 0 0 1px rgba(253,253,253,.25);
-	transition: right .25s linear 0s;
+	transition: top .25s ease 0s, opacity .25s ease 0s;
 }
 section.hddn {
+	top: 100%;
+	opacity: .0;
+}
+section.xhddn {
 	opacity: .250;
 	right: -360px;
 	box-shadow: none;
