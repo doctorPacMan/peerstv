@@ -24,6 +24,7 @@ section.mod-channels {
 	margin: 1px 1px 0 0;
 	color: lightgray;
 	background-color: rgba(70,70,70,.5);
+	position: relative;
 }
 section.mod-channels,
 .chanlist {width: 362px}
@@ -40,9 +41,21 @@ section.mod-channels,
 
 .chanlist > li:nth-child(-n+3) {margin-top:0}
 .chanlist > li:nth-child(3n) {margin-right:0}
+
+.chanlist > li.focus,
 .chanlist > li:hover {
 	background-color: rgba(255,255,255,.125);
 }
+.chanlist > li:after {
+	position: absolute;
+	left:0; width:100%;
+	top:0; height:100%;
+	background: rgba(0,0,100,.15);
+	pointer-events: none;
+	box-shadow: inset 0 0 0 4px dodgerblue;
+}
+.chanlist > li.focus:after {content:''}
+
 .chanlist a {
 	width: 100%;
 	height: 100%;
@@ -93,7 +106,7 @@ section.mod-channels,
 	top:0;bottom:0;
 	pointer-events:none;
 }
-.chanlist a:hover:after {
+.chanlist a:hover:afterz {
 	background: rgba(0,0,200,.05);
 	border: 3px solid dodgerblue;
 }

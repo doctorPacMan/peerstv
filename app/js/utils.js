@@ -1,4 +1,17 @@
 'use strict';
+function scrollIntoView(elem, cont) {
+	//TODO: top/bottom/middle
+	//console.log('scrollIntoView', elem, cont);
+	//console.log('scrollIntoView', cont.offsetHeight, cont.scrollHeight);
+	//console.log('scrollIntoView', elem.offsetHeight, elem.offsetTop);
+
+	cont.style.scrollBehavior = 'smooth';
+	setTimeout(function(){cont.style.scrollBehavior = null},1000);
+
+	var cy = cont.offsetHeight - elem.offsetHeight,
+		sy = elem.offsetTop - cy/2;
+	cont.scrollTop = sy<0 ? 0 : sy;
+}
 function eventEmitter() {
 	//var emitter = new EventTarget();
 	//var emitter = document.createElement('span');

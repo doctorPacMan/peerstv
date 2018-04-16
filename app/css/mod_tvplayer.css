@@ -7,19 +7,8 @@
 	right: 360px;
 	left: 302px;
 }
-.tvplayer {
+.mod-tvplayer > div {
 	position: relative;
-	left:0;width: 100%;
-	top:0;height: 100%;
-}
-.tvplayer > video {
-	display: block;
-	position:relative;
-	left:0;width:100%;
-	top:0;height:100%;
-	background: rgba(0,0,50,.75);
-	object-fit: none;
-	object-fit: fill;
-	object-fit: cover;
-	object-fit: contain;
+	top:0px;height:100%;
+	left:0px;width:100%;
 }

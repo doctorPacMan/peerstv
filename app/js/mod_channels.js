@@ -60,10 +60,14 @@ click(cnid, event) {
 */
 }
 onChannelView(e) {
+	var prev = this._list.querySelector('li.focus');
+	if(prev) prev.classList.remove('focus');
+
 	var cha = $App.getChannel(e.detail),
-		id = cha.apid,
-		cont = this._channels[id]['node'].parentNode;
-	//console.log('onChannelView',cha);
+		cont = this._channels[cha.apid]['node'].parentNode;
+	
 	console.log('onChannelView',cont);
+	scrollIntoView(cont,this._list.parentNode.parentNode);
+	cont.classList.add('focus');
 }
 };

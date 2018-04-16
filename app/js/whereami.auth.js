@@ -96,6 +96,7 @@ _onloadAuthToken: function(code, data, xhr) {
 	this._requestAccount();
 },
 _requestAccount: function() {
+return
 	var apiurl = this.service('auth').location+'account/';
 	XHR.request(apiurl,this._onloadAccount.bind(this));
 },

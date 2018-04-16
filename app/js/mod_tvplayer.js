@@ -2,7 +2,7 @@
 class ModuleTvplayer {
 constructor(wrapper) {
 
-	this.cnp = new Tvplayer('tvplayer');
+	this.cnp = new Tvplayer('tvplayer-container');
 	//this.view(123811800);
 	//attachEvent('whereami',this.view.bind(this));
 }

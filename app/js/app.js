@@ -29,9 +29,9 @@ _onready_whereami:function() {
 _onready_playlist: function(data) {
 	console.log('playlist', data.length);
 	this.channels = data;
-	this.mod('passport').module.update();
+	//this.mod('passport').module.update();
 	this.mod('channels').module.update(data);
-	this.mod('schedule').module.update();
+	//this.mod('schedule').module.update();
 	this.router.initialize();
 },
 init: function(channels) {

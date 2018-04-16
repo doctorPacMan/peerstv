@@ -1,18 +1,31 @@
 'use strict';
 class Tvplayer {
 constructor(container) {
-
+	this.STATE_IDLE = 'IDLE';
+	this.STATE_LOAD = 'LOAD';
+	this.STATE_FAIL = 'FAIL';
+	this.STATE_VIEW = 'VIEW';
 	this._hls_type = this.hlsPlayType();
 	//console.log('Tvplayer', this._hls_type || 'hlsjs');
 
 	var container = document.getElementById(container);
+	this.container = container;
+	this._stage = document.createElement('div');
 	this._video = this.createVideoElement();
-	container.appendChild(this._video);
+	this._stage.appendChild(this._video);
+
+	this._spinner = document.createElement('s');
+	this._spinner.appendChild(document.createElement('s'));
+	this._stage.appendChild(this._spinner);
+
+	this._stage.setAttribute('class','tvplayer');
+	this.container.appendChild(this._stage);
+	this.state(this._state = this.STATE_IDLE);
 
 	var play = this.load.bind(this,'//www.cn.ru/data/files/test/countdown.mp4',false);
 	//var play = this.play.bind(this,'http://online.video.rbc.ru/online/rbctv_480p/index.m3u8');
 	//var play = this.play.bind(this,'http://hls.novotelecom.ru/streaming/cam_lunintsev_sq/16/camv/playlist.m3u8');
-	//setTimeout(play,300);
+	setTimeout(play,300);
 }
 hlsPlayType() {
 	var cp = false, vp = document.createElement('video'),
@@ -20,17 +33,23 @@ hlsPlayType() {
 	tp.forEach(function(v) {if(cp===false && vp.canPlayType(v)!=='') cp = v});
 	return cp;
 }
-stop(){
+state(st) {
+	this._stage.classList.remove('st-'+this._state.toLowerCase());
+	this._stage.classList.add('st-'+st.toLowerCase());
+	this._state = st;
+}
+stop() {
 	this._hlsjs.stopLoad();
 	//this.pause(true);
 	//this.seek(0);
 }
 load(src,autoplay) {
-
+return;
 	//this.trace('load '+(!this._ready ? 'defer':'start'), 'src: "'+src+'"');
 	//if(!this._ready) return this._onready_load = this.load.bind(this,src);
 	this.stop();
 	this._hlsjs.detachMedia(this._video);
+	this.state(this.STATE_LOAD);
 
 	if(src===null) {
 		this._sauce.removeAttribute('src');
@@ -77,6 +96,9 @@ createVideoElement() {
 	//video.removeAttribute('autoplay');
 	video.appendChild(this._sauce = sauce);
 
+	video.addEventListener('canplay',this._event_playready.bind(this));
+	video.addEventListener('error',this._event_error.bind(this));
+
 	// observe buffering state
 	video.addEventListener('waiting',this._event_waiting.bind(this,true));
 	hlsjs.on(Hls.Events.ERROR,this._event_waiting.bind(this,false));
@@ -84,19 +106,24 @@ createVideoElement() {
 		bufdone_events = ['playing','suspend','emptied','seeked','error'];
 	bufdone_events.forEach(function(en){video.addEventListener(en,buffering_done)});
 
+	hlsjs.on(Hls.Events.ERROR,this._event_error.bind(this));
+	hlsjs.on(Hls.Events.MANIFEST_PARSED,function(){hlsjs.startLoad(-1)});
 	hlsjs.on(Hls.Events.MEDIA_ATTACHED,function(e){
 		var src = sauce.getAttribute('src');
 		if(null!=src) hlsjs.loadSource(src);
 		//console.log(e, src);
 	});
-	hlsjs.on(Hls.Events.MANIFEST_PARSED,function(){
-		//console.log('MANIFEST_PARSED',e);
-		//video.play();
-	});	
 
 	this._hlsjs = hlsjs;
 	this._hlsjs.attachMedia(video);
 	return video;
+}
+_event_error() {
+	this.state(this.STATE_FAIL);
+}
+_event_playready() {
+	this.state(this.STATE_VIEW);
+	//dispatchEvent('playready');
 }
 _event_waiting(st,e) {
 	//console.log('BUFF',(e?e.type:'custom'),this._is_waiting,st);
