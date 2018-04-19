@@ -5,6 +5,7 @@ constructor(json) {
 	this._data = data;
 
 	this.id = json.id;
+	this.cnid = json.channel.channelId;
 	this.name = json.title || 'Untitled';
 	this.time = Date.json(json.date);
 

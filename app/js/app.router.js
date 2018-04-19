@@ -8,7 +8,7 @@ location: function(apid) {
 	window.location.hash = '!/'+apid+'/';
 },
 hashchange: function(e) {
-
+	if(window.location.hash.indexOf('#!/')!==0) return;
 	var hash = window.location.hash.replace(/^#/,''),
 		hash = ''!==hash ? hash : null,
 		params = {};

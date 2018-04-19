@@ -4,8 +4,8 @@
 	bottom:0px;right:0;
 	box-shadow: inset 0 0 0px 1px cyan;
 	padding: 1px;
-	right: 360px;
-	left: 302px;
+	-x-right: 360px;
+	-x-left: 302px;
 }
 .mod-tvplayer > div {
 	position: relative;

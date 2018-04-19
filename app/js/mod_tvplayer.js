@@ -7,12 +7,10 @@ constructor(wrapper) {
 	//attachEvent('whereami',this.view.bind(this));
 }
 view(id) {
-	//var id = 123820842;
-	console.log('view',id);
-/*
-	var tvs = $App.getTelecastById(id),
-		cha = $App.getChannelById(cnid);
-
+	var tvs = $App.getTelecast(id),
+		cha = tvs ? $App.getChannelById(tvs.cnid) : null,
+		cid = cha.sources[0].contractor;
+	//return console.log('view',id,tvs,cha);
 	if(false) {
 		var apiurl = $App.api.service('tv_guide').location;
 		apiurl+= 'telecastInfo.json?telecast='+id;
@@ -23,13 +21,12 @@ view(id) {
 		});
 	};
 	
-	var cid = 1,
-		locurl = $App.api.medialocator(cid);
+	var locurl = $App.api.medialocator(cid>=0 ? cid : 2);
 	locurl += 'sources.json?id='+id;
 	
 	if(cid!=2) XHR.load(locurl,this.rips.bind(this));
 	else XHR.request(locurl,this.rips.bind(this));
-*/
+
 }
 rips(data) {
 	console.log('SRC',data);

@@ -6,7 +6,8 @@ initialize: function() {
 
 	this.emitter = eventEmitter();
 	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
-
+	this._telecasts = {};
+	
 	this.moduleRegister('schedule',new ModuleSchedule('mod-schedule'));
 	this.moduleRegister('passport',new ModulePassport('mod-passport'));
 	this.moduleRegister('channels',new ModuleChannels('mod-channels'));
@@ -29,7 +30,7 @@ _onready_whereami:function() {
 _onready_playlist: function(data) {
 	console.log('playlist', data.length);
 	this.channels = data;
-	//this.mod('passport').module.update();
+	this.mod('passport').module.update();
 	this.mod('channels').module.update(data);
 	//this.mod('schedule').module.update();
 	this.router.initialize();
@@ -59,8 +60,13 @@ setAuthToken: function() {
 	console.log('Set token:', token);
 	XHR.token = token;
 },
-getTelecastById: function(id) {
-	return null;
+getTelecast: function(id) {
+	return this._telecasts[id] || null;
+},
+registerTelecast: function(json) {
+	var tvshow = new Tvshow(json);
+	this._telecasts[tvshow.id] = tvshow;
+	return tvshow;
 },
 getChannel: function(apid) {
 	return this.channels.find(v=>{return apid==v.apid});
@@ -74,7 +80,6 @@ loadChannel: function(apid) {
 	console.log('loadChannel', cha);
 	this._tvplayer.load(source.src);
 	dispatchEvent('channel/load',apid);
-	return;
 },
 playChannel: function(cnid) {
 	var cha = this.getChannelById(cnid),

@@ -6,27 +6,21 @@ _constructor(){
 	this._list = this.section.querySelector('ol.schedule');
 	this._days = this.section.querySelector('.progdays > div');
 	attachEvent('channel/play',this.onChannelPlay.bind(this));
-	this.test();
+	attachEvent('telecast/play',this.onTelecastPlay.bind(this));
+	//this.test();
 }
-test() {
-	var days = [
-		{"year":2018,"month":4,"day":10,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":11,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":12,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":13,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":14,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":15,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":16,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":17,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":18,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":19,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":20,"hour":0,"minute":0,"second":0,"timezone":25200}
-		,{"year":2018,"month":4,"day":21,"hour":0,"minute":0,"second":0,"timezone":25200}
-	];
-
-	this.fillDates(days);
-	//console.log(this._days);
-
+test() {}
+onTelecastPlay(e) {
+	var bl = this._list.querySelector('li.crnt'),
+		id = e.detail,
+		li = this._list.querySelector('li#r'+id);
+	
+	if(li!=bl) {
+		if(bl) bl.classList.remove('crnt');
+		li.classList.add('crnt');
+	}
+	
+	console.log('onTelecastPlay',id,li);
 }
 onChannelPlay(e) {
 	//console.log('onChannelPlay',e);
@@ -101,15 +95,18 @@ load(date,cnid) {
 }
 onload(day, data) {
 	//localStorage.setItem('schedule',JSON.stringify(data));
-
 	var df = document.createDocumentFragment();
 	var now = Date.current(),
 		ntz = -60*now.getTimezoneOffset(),
-		day_from = (new Date(day)).setHours(this.MORNING,0,0),
-		day_ends = (new Date(day)).setHours(this.MORNING+24,0,0);
+		day_from = (new Date(day)).setHours(this.MORNING, 0, 0),
+		day_ends = (new Date(day)).setHours(this.MORNING+24, 0, 0),
+		cnid = data.channelId,
+		cha = $App.getChannelById(cnid);
+console.log('PPPP',cha.apid);
 	//console.log(new Date(day_from), new Date(day_ends));
 	data.telecastsList.forEach(v=>{
-		var tvs = this.attachTelecast(v, now, ntz);
+		//var tvs = this.attachTelecast(v, now, ntz);
+		var tvs = $App.registerTelecast(v);
 		if(tvs.ends<=day_from) return;
 		if(tvs.time>=day_ends) return;
 		
@@ -126,11 +123,13 @@ onload(day, data) {
 		s.innerText = tvs.name;
 		a.appendChild(t);
 		a.appendChild(s);
+		a.setAttribute('href','#!/'+cha.apid+'/'+tvs.id+'/');
 
 		if(tvs.state!='PAST') a.appendChild(bar);
 		if(tvs.state=='LIVE') a.classList.add('ps-live');
-		if(tvs.state!='SOON') a.setAttribute('href','#past');
+		if(tvs.state!='SOON') a.classList.add('ps-past');
 
+		li.setAttribute('id','r'+tvs.id);
 		li.appendChild(a);
 		df.appendChild(li);
 	});
@@ -154,11 +153,5 @@ focusDay(day) {
 		sx = time.offsetLeft - cx/2;
 	this._days.scrollLeft = sx<0 ? 0 : sx;
 	//console.log(this._days.scrollLeft);
-}
-attachTelecast(json, now, ntz) {
-	//json.date.timezone, ntz
-	var tvshow = new Tvshow(json);
-	//console.log(tvshow.state, tvshow.time, tvshow.name)
-	return tvshow;
 }
 }

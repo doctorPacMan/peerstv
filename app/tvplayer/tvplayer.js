@@ -44,7 +44,7 @@ stop() {
 	//this.seek(0);
 }
 load(src,autoplay) {
-return;
+//return;
 	//this.trace('load '+(!this._ready ? 'defer':'start'), 'src: "'+src+'"');
 	//if(!this._ready) return this._onready_load = this.load.bind(this,src);
 	this.stop();

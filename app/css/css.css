@@ -10,7 +10,9 @@
 {
     /* styles here */
 }
-
+:root {
+--seablue: rgb(60,120,200);
+}
 /*
 @import url("appstyles.css");
 @import url("sidebar.css");

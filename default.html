@@ -1,13 +1,14 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<meta charset="utf-8" />
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="cleartype" content="on">
 	<meta name="mobile-web-app-capable" content="yes">
 	<title>Peers.TV UWP</title>
-	<link rel="icon" type="image/png" href="/app/img/favicon.png" />
+	<link rel="manifest" href="manifest.json">
+	<link rel="icon" type="image/png" href="app/img/favicon.png">
 	<!-- Ссылки WinJS -->
 	<!-- <link href="WinJS/css/ui-dark.css" rel="stylesheet" /> -->
 	<script src="WinJS/js/base.js"></script>
@@ -58,10 +59,10 @@
 	
 	<aside>
 		<div>
-		<a class="favr" onclick="$App.favor()" href="#favourites"><span>Избранное</span></a>
+		<a class="favr" style="display:none" onclick="$App.favor()" href="#favourites"><span>Избранное</span></a>
 		<a class="list" data-section="channels"><span>Все каналы</span></a>
 		<a class="schd" data-section="schedule"><span>Программа</span></a>
-		<a class="cams" href=""><span>Перекрёстки</span></a>
+		<a class="cams" style="display:none" href=""><span>Перекрёстки</span></a>
 		</div>
 		<!-- div>
 		<a class="live" href=""><span>Сейчас в эфире</span></a>

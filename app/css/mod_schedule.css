@@ -14,6 +14,9 @@ section.mod-schedule > h2 + nav + div {
 .schedule > li {border-top: 1px dashed rgba(200,200,200,.25)}
 .schedule > li:first-child {border-top-color: transparent}
 .schedule > li:nth-child(2n) {background: rgba(200,200,200,.05)}
+.schedule > li.crnt {
+	background-color: var(--seablue);
+}
 .tlcbar {
 	height: 36px;
 	padding: 5px 5px 6px 0;
@@ -30,8 +33,8 @@ section.mod-schedule > h2 + nav + div {
 	position: relative;
 	overflow: hidden;
 }
-.tlcbar[href] {
-	color: rgb(255,255,255)	
+.tlcbar.ps-past {
+	color: white;	
 }
 .tlcbar.ps-live s {bottom:0}
 .tlcbar.ps-live time:after {
@@ -126,5 +129,5 @@ section.mod-schedule > h2 + nav + div {
 	font-weight: bold;
 }
 .progdays > div > time.crnt {
-	background-color: rgb(60,120,200);
+	background-color: var(--seablue);
 }
