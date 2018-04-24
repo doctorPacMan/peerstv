@@ -13,10 +13,14 @@ constructor(container) {
 	this._stage = document.createElement('div');
 	this._video = this.createVideoElement();
 	this._stage.appendChild(this._video);
-
+	
 	this._spinner = document.createElement('s');
 	this._spinner.appendChild(document.createElement('s'));
 	this._stage.appendChild(this._spinner);
+
+	var over = document.createElement('sup');
+	this._stage.appendChild(over);
+	this._stage.appendChild(this.controls());
 
 	this._stage.setAttribute('class','tvplayer');
 	this.container.appendChild(this._stage);
@@ -37,6 +41,18 @@ state(st) {
 	this._stage.classList.remove('st-'+this._state.toLowerCase());
 	this._stage.classList.add('st-'+st.toLowerCase());
 	this._state = st;
+}
+pause(st) {
+	var st = typeof st ==='boolean' ? st : !this._video.paused;
+	console.log('pause',st);
+	this._video[st?'pause':'play']();
+}
+size() {
+	var vf = this._video.style.objectFit;
+	this._video.style.objectFit = vf!=='contain' ? 'contain' : 'cover';
+}
+mute() {
+
 }
 stop() {
 	this._hlsjs.stopLoad();
@@ -90,10 +106,10 @@ createVideoElement() {
 	video.setAttribute('preload','metadata');
 	video.setAttribute('height','100%');
 	video.setAttribute('width','100%');
-	video.setAttribute('muted','');
 	video.setAttribute('controls','');
 	//video.setAttribute('autoplay','');
 	//video.removeAttribute('autoplay');
+	video.setAttribute('muted','');video.muted = true;
 	video.appendChild(this._sauce = sauce);
 
 	video.addEventListener('canplay',this._event_playready.bind(this));
@@ -129,5 +145,38 @@ _event_waiting(st,e) {
 	//console.log('BUFF',(e?e.type:'custom'),this._is_waiting,st);
 	if(this._is_waiting === st) return;
 	else this._is_waiting = st;
+}
+controls() {
+
+	var cntrplay = document.createElement('button');
+	cntrplay.addEventListener('click',this.pause.bind(this,null));
+	this._stage.appendChild(cntrplay);
+
+	var wrapper = document.createElement('div');	
+
+	var play = document.createElement('button');
+	play.addEventListener('click',this.pause.bind(this,null));
+	play.setAttribute('class','play');
+	wrapper.appendChild(play);
+
+	var time = document.createElement('time');
+	time.innerText = '00:00:00';
+	wrapper.appendChild(time);
+
+	var size = document.createElement('button');
+	size.addEventListener('click',this.size.bind(this));
+	size.setAttribute('class','size');
+	wrapper.appendChild(size);
+
+	var mute = document.createElement('button');
+	mute.addEventListener('click',this.mute.bind(this));
+	mute.setAttribute('class','mute');
+	wrapper.appendChild(mute);
+
+	var bar = document.createElement('div');
+	wrapper.appendChild(bar);
+
+	wrapper.setAttribute('class','cntrls');
+	return wrapper;
 }
 };

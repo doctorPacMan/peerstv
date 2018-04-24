@@ -1,6 +1,20 @@
 Object.assign(Whereami.prototype,{
+// "demoapp" id=1
 API_CLIENT: 'demoapp',
 API_SECRET: 'demoapp',
+// "default" id=15
+//API_CLIENT: '83438335',
+//API_SECRET: '96ac1ee9b626a5a0a3a147518232d2f5',
+getAuthToken: function() {
+	console.log('getAuthToken');
+'token_expires'
+'token_refresh'
+	//var apiurl = $App.api.service('auth').location+'account/';
+	//if('function'===typeof(callback)) {} else
+	return new Promise(function(resolve, reject){
+		//XHR.request(apiurl,function(data){resolve(data)});
+	});
+},
 authorize: function(code, redirect_url) {
 	console.log('AUTHCODE',code,redirect_url);
 	this._requestAuthToken(code,redirect_url);

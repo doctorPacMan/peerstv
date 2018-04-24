@@ -1,4 +1,11 @@
 Object.assign($App,{request:{
+account: function(callback) {
+	//console.log('App.request.account');
+	var apiurl = $App.api.service('auth').location+'account/';
+	return new Promise(function(resolve, reject){
+		XHR.request(apiurl,function(data){resolve(data)});
+	});
+},
 archive: function(callback){
 	var apiurl = $App.api.service('user_data').location;
 	apiurl+= 'cloud/telecasts/?method=list&format=json';

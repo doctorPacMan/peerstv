@@ -132,6 +132,10 @@ thiz: function() {
 		enumerable: true,
 		value: this.account.bind(this)
 	});
+	Object.defineProperty(thiz, 'getAuthToken', {configurable: false,
+		enumerable: true,
+		value: this.getAuthToken.bind(this)
+	});
 	Object.defineProperty(thiz, 'token', {configurable: false,
 		enumerable: true,
 		value: this.token.bind(this)

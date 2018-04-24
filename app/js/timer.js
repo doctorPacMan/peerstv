@@ -13,6 +13,11 @@ constructor(node) {
 	this.node = node;
 	//this.start(3);
 }
+stop() {
+	clearTimeout(this._timeout);
+	clearInterval(this._interval);
+	this.node.innerText = '--:--';
+}
 start(timeout) {
 	this._initime = new Date();
 	this._endtime = new Date(this._initime.getTime() + timeout*1e3);

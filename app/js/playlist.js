@@ -42,7 +42,7 @@ playlistLoader.prototype = {
 			playlists[g.cid] = {cid:g.cid, src:g.src, data:null};
 		});
 		
-		playlists = this._prov_playlist(playlists, 0);
+		//playlists = this._prov_playlist(playlists, 0);
 		//playlists = this._extra_playlist(playlists,1549);
 		setTimeout(this._load_playlists.bind(this,playlists),12);
 		setTimeout(this._load_favorites.bind(this,serviceUserdata.location),12);
@@ -139,7 +139,7 @@ playlistLoader.prototype = {
 
 		if(!tids.length) return callback();
 
-		var apiurl = this._apiurl+'/registry/2/territories.json?id='+tids.join(',');
+		var apiurl = '//'+this._apiurl+'/registry/2/territories.json?id='+tids.join(',');
 		this.trace('territory:',tids.join(', '));
 		XHR.load(apiurl,function(data){
 				//console.log(data);

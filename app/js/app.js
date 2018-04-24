@@ -7,7 +7,7 @@ initialize: function() {
 	this.emitter = eventEmitter();
 	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
 	this._telecasts = {};
-	
+return;
 	this.moduleRegister('schedule',new ModuleSchedule('mod-schedule'));
 	this.moduleRegister('passport',new ModulePassport('mod-passport'));
 	this.moduleRegister('channels',new ModuleChannels('mod-channels'));
@@ -19,6 +19,7 @@ initialize: function() {
 _onready_database: function(success, indb) {
 	console.log('database',window.database);
 	this.api = new Whereami();
+	//this.api.getAuthToken();
 	this.api.init(this._onready_whereami.bind(this));
 },
 _onready_whereami:function() {
@@ -104,27 +105,27 @@ token: function() {return this.api.token()},
 mod: function(id) {
 	return this._mods[id];
 },
-moduleRegister: function(apid, mod) {
+moduleRegister: function(mid, mod) {
 	if(!this._mods) this._mods = {};
 	var aside = document.querySelector('body > div > aside'),
-		btn = aside.querySelector('a[data-section="'+apid+'"]');
-	mod.apid = apid;
-	//console.log('reg', apid, mod);
-	//console.log('reg', apid, btn);
+		btn = aside.querySelector('a[data-section="'+mid+'"]');
+	mod.apid = mid;
+	//console.log('reg', mid, mod);
+	//console.log('reg', mid, btn);
 	if(btn) {
 		btn.onclick = mod.toggle.bind(mod);
 		btn.classList[mod.hidden?'remove':'add']('visible');
 	}
-	this._mods[apid] = {
+	this._mods[mid] = {
 		module: mod,
 		button: btn
 	};
 },
 onModuleToggle:function(e){
-	var apid = e.detail;
-	var mod = this.mod(apid);
+	var mid = e.detail;
+	var mod = this.mod(mid);
 	if(mod.button) mod.button.classList[mod.module.hidden?'remove':'add']('visible');
-	console.log(apid, !mod.module.hidden, mod);
+	//console.log(apid, !mod.module.hidden, mod);
 },
 toggleModule: function(id) {
 	var mod = this.mod(id);

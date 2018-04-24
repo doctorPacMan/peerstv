@@ -71,10 +71,8 @@
 		<a class="news" href=""><span>Новости дня</span></a>
 		</div -->
 		<div>
-		<a class="conf" href=""><span>Настройки</span></a>
+		<a class="conf" style="display:none" href=""><span>Настройки</span></a>
 		<a class="drop" onclick="$App.drop()"><span>Перезапуск</span></a>
-		</div>
-		<div>
 		<a class="auth" data-section="passport"><span>Авторизация</span></a>
 		</div>
 	</aside>
@@ -99,8 +97,8 @@
 			</div>
 
 			<div class="b-account" id="acc-account">
-				<h5><u>Anonymous</u> #<s>12345</s></h5>
-				<span></span>
+				<h5><u>Anonymous</u> #<s>0000</s></h5>
+				<span>undefined</span>
 				<time>00:00</time>
 			</div>
 
@@ -113,7 +111,7 @@
 		<iframe src="about:blank" style="display:none"></iframe>
 	</section>
 
-	<section class="mod-schedule" id="mod-schedule">
+	<section class="mod-schedule hddn" id="mod-schedule">
 		<h2><u>Schedule</u></h2>
 		<nav class="progdays">
 			<div>
@@ -165,7 +163,7 @@
 		</div></div>
 	</section>
 
-	<section class="mod-channels" id="mod-channels">
+	<section class="mod-channels hddn" id="mod-channels">
 		<h2><u>Channels</u></h2>
 		<div><div>
 			<ol class="chanlist">

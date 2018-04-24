@@ -53,7 +53,6 @@ _constructor(){
 		accid: node.querySelector('s')
 	};
 	//this.update();
-	attachEvent('account/update',this.onAccountUpdate.bind(this));
 	//this.open();
 
 	var node = section.querySelector('#device-info');
@@ -147,20 +146,23 @@ updateTerritory(data) {
 	this._time_interval = setInterval(timetick,1000);timetick();
 	//this._N.territory.time = 
 }
-onAccountUpdate(event) {
-	//console.log('onAccountUpdate',event.detail);
-	var data = event.detail;
-	this._N.account.login.innerText = data.login || 'Anonymous';
-	this._N.account.token.innerText = data.token;
-	this._N.account.accid.innerText = data.id;
-
-	var exp = new Date(data.expires);//console.log(exp);
-	this._N.account.timer.start(Math.floor((exp - Date.current())/1e3));
+updateAccount(data) {
+	console.log('updateAccount',data);
+	//if(!data) return;
+	this._N.account.accid.innerText = data.account_id;
+	this._N.account.login.innerText = data.username || 'anonymous';
+	this._N.account.token.innerText = data.token || 'undefined';
+	
+	if(data.expires) {
+		var exp = new Date(data.expires);//console.log(exp);
+		this._N.account.timer.start(Math.floor((exp - Date.current())/1e3));
+	} else this._N.account.timer.stop();
 }
 update() {
 //this.updateTerritory({"territoryId":16,"name":"Новосибирск","parentId":4,"isLeaf":false,"timezone":25200});
 //this.updateProvider({"contractorId":1,"name":"Новотелеком, ООО","images":[{"width":150,"height":90,"URL":"http://a.trunk.ptv.bender.inetra.ru/data/registry/images/2842.png","profile":2},{"width":150,"height":90,"URL":"http://a.trunk.ptv.bender.inetra.ru/data/registry/images/2712.png","profile":3},{"width":180,"height":180,"URL":"http://a.trunk.ptv.bender.inetra.ru/data/registry/images/2101.png","profile":1}],"brandName":"Электронный город","privateOfficeURL":"https://billing.novotelecom.ru/billing/user/stb310","callCenterNumber":"+7 (383) 209-00-00","supportedOfficeIdioms":[1,2]});
 	this.updateTerritory($App.api.territory());
 	this.updateProvider($App.api.contractor());
+	//$App.request.account().then(this.updateAccount.bind(this));
 }
 };

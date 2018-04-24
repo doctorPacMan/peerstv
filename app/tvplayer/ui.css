@@ -1,0 +1,79 @@
+.tvplayer > button {
+	position: absolute;
+	left: 50%;top: 50%;
+	margin: -36px 0 0 -36px;
+	padding: 0 0 0 2px;
+	border: 0;
+	width: 72px;
+	height: 72px;
+	background: rgba(0,0,0,.5);
+	box-shadow: none;
+	border-radius: 50%;
+	font: 36px/36px 'Segoe';
+	border: 2px solid darkorange;
+	color: darkorange;
+}
+.tvplayer > button:after {content: '\E768'}
+
+.cntrls {
+	position: absolute;
+	left:5%;right:5%;
+	bottom: 120px;
+	height: 48px;
+	text-align: center;
+	background: rgba(0,0,0,.5);
+	border-radius: 4px;
+	padding: 4px;
+}
+.cntrls {
+	left: 50%;
+	right: auto;
+	margin-left: -360px;
+	width: 720px;
+}
+.cntrls > button {
+	display: inline-block;
+	margin: 0 4px;
+	padding: 0;
+	border: 0;
+	width: 48px;
+	height: 48px;
+	background: transparent;
+	box-shadow: none;
+	border-radius: 50%;
+	font: 24px/44px 'Segoe';
+	border: 1px solid black;
+	color: white;
+}
+.cntrls > button:after {
+	display: inline-block;
+	content: '\EDB4';
+}
+.cntrls > button.play:after {content: '\EDB5'}
+.cntrls > button.size:after {content: '\E799'}
+.cntrls > button.mute:after {content: '\E74F'}
+.cntrls > button.play {
+	float: left;
+	margin-left: 0;
+}
+.cntrls > button.size,
+.cntrls > button.mute {
+	float: right;
+	margin-right: 0;
+}
+
+.cntrls > time {
+	float: left;
+	background: black;
+	padding: 0px .25em;
+	font-size: 16px;
+	line-height: 20px;
+	margin: 14px 4px 0 0;
+}
+
+.cntrls > div {
+	height: 36px;
+	overflow: hidden;
+	background: rgba(200,200,200,.2);
+	margin: 6px 0px 0;
+}
