@@ -21,7 +21,7 @@
 	bottom: 120px;
 	height: 48px;
 	text-align: center;
-	background: rgba(0,0,0,.5);
+	background: rgba(0,0,0,.125);
 	border-radius: 4px;
 	padding: 4px;
 }
@@ -41,8 +41,9 @@
 	background: transparent;
 	box-shadow: none;
 	border-radius: 50%;
+	border-radius: 4px;
 	font: 24px/44px 'Segoe';
-	border: 1px solid black;
+	border: 1px solid rgba(200,200,200,.25);
 	color: white;
 }
 .cntrls > button:after {
@@ -61,19 +62,48 @@
 	float: right;
 	margin-right: 0;
 }
-
+.cntrls > button.mute {
+	padding-left: 4px;
+}
 .cntrls > time {
 	float: left;
-	background: black;
+	background: blacks;
 	padding: 0px .25em;
 	font-size: 16px;
 	line-height: 20px;
 	margin: 14px 4px 0 0;
 }
-
 .cntrls > div {
+	float: right;
 	height: 36px;
+	width: 100px;
 	overflow: hidden;
-	background: rgba(200,200,200,.2);
-	margin: 6px 0px 0;
+	background: rgba(200,200,200,.0002);
+	margin: 6px 0 0 3px;
+	position: relative;
+}
+.cntrls > div + div {
+	float: none;
+	width: auto;
+	margin-left: 0;
+}
+.cntrls > div:after {
+	content:'';
+	display: block;
+	height: 4px;
+	background-color: dodgerblue;
+	margin: 16px 0 0;
+}
+.cntrls > div:before {
+	content:'';
+	display: block;
+	position: absolute;
+	left:0px;width:16px;
+	top:50%;height:16px;
+	background: green;
+	border-radius: 50%;
+	margin: -8px 0 0;
+	background-color: var(--seablue);
+	box-shadow: 0 0 2px 0 rgba(0,0,0,.75);
+	left:33%;
 }

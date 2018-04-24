@@ -173,6 +173,9 @@ controls() {
 	mute.setAttribute('class','mute');
 	wrapper.appendChild(mute);
 
+	var vol = document.createElement('div');
+	wrapper.appendChild(vol);
+
 	var bar = document.createElement('div');
 	wrapper.appendChild(bar);
 

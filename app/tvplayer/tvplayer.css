@@ -1,6 +1,7 @@
 @import url("ui.css");
 @import url("spinner.css");
 .tvplayer {
+	--seablue: rgb(60,120,200);
 	position: relative;
 	left:0;width: 100%;
 	top:0;height: 100%;
