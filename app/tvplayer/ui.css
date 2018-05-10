@@ -2,69 +2,84 @@
 	position: absolute;
 	left: 50%;top: 50%;
 	margin: -36px 0 0 -36px;
-	padding: 0 0 0 2px;
+	padding: 0 0 0 4px;
 	border: 0;
 	width: 72px;
 	height: 72px;
-	background: rgba(0,0,0,.5);
+	background: rgba(25,25,25,.5);
 	box-shadow: none;
 	border-radius: 50%;
 	font: 36px/36px 'Segoe';
-	border: 2px solid darkorange;
-	color: darkorange;
+	border: 2px solid var(--skyblue);
+	color: var(--skyblue);
 }
 .tvplayer > button:after {content: '\E768'}
 
 .cntrls {
 	position: absolute;
 	left:5%;right:5%;
-	bottom: 120px;
-	height: 48px;
+	left:0%;right:0%;
+	bottom: 0px;
+	height: 76px;
 	text-align: center;
-	background: rgba(0,0,0,.125);
-	border-radius: 4px;
-	padding: 4px;
+	background: transparent none repeat-x 0 100%;
+	background-image: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,.5) 75%, rgba(0,0,0,0) 100%);
+	padding: 32px 6px 12px;
+	margin: 0 0 0px;
+	min-width: 268px;
 }
-.cntrls {
-	left: 50%;
-	right: auto;
-	margin-left: -360px;
-	width: 720px;
+.cntrls > div {
+	position: relative;
+	right:0;width:auto;
+	top: 0px;left: 0px;
+	margin: 0 auto 4px;
+	max-width: 720px;
 }
+
 .cntrls > button {
 	display: inline-block;
-	margin: 0 4px;
+	margin: 0 2px;
 	padding: 0;
 	border: 0;
 	width: 48px;
 	height: 48px;
+	overflow: hidden;
+	vertical-align: top;
 	background: transparent;
 	box-shadow: none;
 	border-radius: 50%;
-	border-radius: 4px;
-	font: 24px/44px 'Segoe';
-	border: 1px solid rgba(200,200,200,.25);
+	border-radius: 3px;
+	font: 18px/44px 'Segoe';
+	border: 1px solid rgba(200,200,200,.1);
+	color: lightgray;
+	color: white;
+}
+.cntrls > button:hover,
+.cntrls > button:active {
+	background-color: rgba(200,200,200,.25);
+	border-color: rgba(200,200,200,.5);
 	color: white;
 }
 .cntrls > button:after {
 	display: inline-block;
 	content: '\EDB4';
 }
-.cntrls > button.play:after {content: '\EDB5'}
-.cntrls > button.size:after {content: '\E799'}
-.cntrls > button.mute:after {content: '\E74F'}
-.cntrls > button.play {
-	float: left;
-	margin-left: 0;
+.cntrls > button.play {font-size:150%}
+.cntrls > button.play:after {content: '\E768'}
+.cntrls > button.skpb:after {content: '\ED3C'}
+.cntrls > button.skpf:after {content: '\ED3D'}
+
+.cntrls > button.play {}
+.cntrls > button.size:after {
+	content: '\E73F';
+	content: '\E740';
 }
-.cntrls > button.size,
-.cntrls > button.mute {
-	float: right;
-	margin-right: 0;
-}
-.cntrls > button.mute {
-	padding-left: 4px;
-}
+.cntrls > button.play:after {content: '\E769'}
+.tvplayer.vs-pause button.play:after {content: '\E768'}
+
+.cntrls > button.mute:after {content: '\E767'}
+.tvplayer.vs-muted button.mute:after {content: '\E74F'}
+
 .cntrls > time {
 	float: left;
 	background: blacks;
@@ -72,38 +87,4 @@
 	font-size: 16px;
 	line-height: 20px;
 	margin: 14px 4px 0 0;
-}
-.cntrls > div {
-	float: right;
-	height: 36px;
-	width: 100px;
-	overflow: hidden;
-	background: rgba(200,200,200,.0002);
-	margin: 6px 0 0 3px;
-	position: relative;
-}
-.cntrls > div + div {
-	float: none;
-	width: auto;
-	margin-left: 0;
-}
-.cntrls > div:after {
-	content:'';
-	display: block;
-	height: 4px;
-	background-color: dodgerblue;
-	margin: 16px 0 0;
-}
-.cntrls > div:before {
-	content:'';
-	display: block;
-	position: absolute;
-	left:0px;width:16px;
-	top:50%;height:16px;
-	background: green;
-	border-radius: 50%;
-	margin: -8px 0 0;
-	background-color: var(--seablue);
-	box-shadow: 0 0 2px 0 rgba(0,0,0,.75);
-	left:33%;
 }

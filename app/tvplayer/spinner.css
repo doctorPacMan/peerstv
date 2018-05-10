@@ -27,7 +27,6 @@
 	top:50%;height:64px;
 	margin: -32px 0 0 -32px;
 	perspective: 800px;
-	background: rgba(53,53,53,1);
 }
 .tvplayer > s > s,
 .tvplayer > s:after,

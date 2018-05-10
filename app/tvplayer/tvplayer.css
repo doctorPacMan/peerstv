@@ -1,7 +1,8 @@
-@import url("ui.css");
 @import url("spinner.css");
+@import url("ui.css");
 .tvplayer {
 	--seablue: rgb(60,120,200);
+	--skyblue: rgb(0,150,255);
 	position: relative;
 	left:0;width: 100%;
 	top:0;height: 100%;
@@ -12,23 +13,85 @@
 	left:0;width:100%;
 	top:0;height:100%;
 	background: rgba(35,35,50,.9);
-	object-fit: cover;
+	object-fit: contain;
+}
+.tvplayer > p {
+	position: absolute;
+	left: 50%;top:0;
+	width: 350px;
+	height: 40px;
+	padding: 9px 8px 9px 0;
+	margin: 24px 0 0 -180px;
+	font: bold 12px/15px sans-serif;
+	background: rgba(90,50,50,.75);
+	border: 1px solid darkred;
+	color: darkgray;
+	overflow: hidden;
+}
+.tvplayer > p:before {
+	font: 24px/36px 'Segoe';
+	text-align: center;
+	content: '\E814';
+	color: orange;
+	height: 40px;
+	width: 60px;
+	float: left;
+}
+.tvplayer > sub {
+	position: absolute;
+	right:auto;left: 0;
+	bottom:0;top: auto;
+	margin: 6px;
+	font: 12px/12px monospace;
+	text-shadow: 1px 1px 1px black;
 }
 .tvplayer > sup {
 	position: absolute;
-	left:0; width:100%;
-	top:0; height:100%;
-	background: rgba(125,125,125,.5);
-	box-shadow: inset 0 0 0 1px cyan;
+	left:0px;right:0px;
+	top:0px;bottom:0px;
+    background: transparent none repeat 0 0;
+    background-image:
+    	linear-gradient(90deg, transparent 0%, transparent 50%, rgba(30,40,70,.25) 50%, rgba(30,40,70,.25)),
+    	linear-gradient(180deg, transparent 0%, transparent 50%, rgba(30,40,70,.25) 50%, rgba(30,40,70,.25));
+	background-size: 2px 2px;
+	border: 1px solid cyan;
+	font: 12px/12px monospace;
+	text-shadow: 1px 1px 1px black;
+	padding: 6px;
 }
 
+.tvplayer > s {background: rgba(53,53,53,0)}
+.tvplayer > s > s,
+.tvplayer > s:after,
+.tvplayer > s:before {border-color: var(--skyblue)}
 
-.tvplayer.st-view > s {display:none}
+.tvplayer > div.cntrls {display: none}
+.tvplayer.st-view > div.cntrls {display: block}
 
-.tvplayer.st-idle > s > s,
-.tvplayer.st-idle > s:after,
-.tvplayer.st-idle > s:before {border-color:darkorange}
+.tvplayer > button {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity .25s ease;
+}
+.tvplayer.st-view.vs-pause > button {
+	opacity: 1;
+	pointer-events: auto;
+}
 
-.tvplayer.st-fail > s > s,
-.tvplayer.st-fail > s:after,
-.tvplayer.st-fail > s:before {border-color:darkred}
+.tvplayer.st-idle > sup {border-color: white}
+.tvplayer.st-load > sup {border-color: darkorange}
+.tvplayer.st-fail > sup {border-color: darkred}
+.tvplayer.st-view > sup {
+	border-color: rgba(200,200,200,.25);
+}
+
+.tvplayer > s {display: none}
+.tvplayer.st-idle > s {}
+.tvplayer.st-load > s {display: block}
+.tvplayer.st-view > s {}
+.tvplayer.st-fail > s {}
+
+.tvplayer.ps-wait > s {display: block}
+.tvplayer.ps-wait > s > s,
+.tvplayer.ps-wait > s:after,
+.tvplayer.ps-wait > s:before {border-color: darkorange}
