@@ -112,9 +112,9 @@ play(src) {
 }
 seek(p) {
 	var d = this.duration(),
-		st = Math.round(1e3*d*p)/1e3;
-	this._video.currentTime = st;
-	//console.log('SEEK', p, st);
+		t = Math.round(1e3*d*p)/1e3;
+	this._video.currentTime = t;
+	console.log('SEEK', p, d, t);
 }
 createVideoElement() {
 	
@@ -270,6 +270,8 @@ controls() {
 
 	var timeline = new Timeline(this._video);
 	timeline.node.addEventListener('seek',function(e){this.seek(e.detail)}.bind(this));
+	timeline.onseek(function(p){console.log('SEEK',p)});
+	timeline.onseek(this.seek.bind(this));
 	wrapper.appendChild(timeline.node);
 
 	var over = document.createElement('sup');

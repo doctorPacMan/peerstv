@@ -26,15 +26,9 @@ constructor(video) {
 	wrapper.appendChild(tl);
 	wrapper.appendChild(tr);
 	//wrapper.addEventListener('click',this._click.bind(this),false);
-	wrapper.addEventListener('mouseup',this._hover.bind(this,false),false);
-	wrapper.addEventListener('mousedown',this._hover.bind(this,true),false);
-	wrapper.addEventListener('mouseleave',this._hover.bind(this,false),false);
-	wrapper.addEventListener('mousemove',this._mover.bind(this),false);
 
-	wrapper.addEventListener("touchstart",this._touch.bind(this,true),false);
-	wrapper.addEventListener("touchend",this._touch.bind(this,false),false);
-	wrapper.addEventListener("touchcancel",this._touch.bind(this,false),false);
-	wrapper.addEventListener("touchmove",this._moven.bind(this),false);
+	if('ontouchstart' in wrapper) this._observeTouchSeek(wrapper);
+	else this._observeMouseSeek(wrapper);
 
 	video.addEventListener('seeked',this.update.bind(this));
 	video.addEventListener('play',this._on_playing.bind(this));
@@ -74,7 +68,7 @@ paused(p) {
 }
 duration(d) {
 	this._duration = d;
-	this.update();
+	return this.update();
 }
 position(v) {
 	this._N.dot.style.left = (v*1e2) + '%';
@@ -85,7 +79,7 @@ update(dt, ct) {
 		v = Math.ceil(1e5 * c/d)/1e3,
 		ms = Math.round((d-c)*1e3);
 	
-	console.log('UPD','d:'+d,'ct:'+c, v+'%', ms+'ms');
+	//console.log('UPD','d:'+d,'ct:'+c, v+'%', ms+'ms');
 	this._N.time.innerText = this.sec2time(c);
 	this._N.dura.innerText = this.sec2time(d);
 
@@ -99,57 +93,85 @@ update(dt, ct) {
 		neu.style.width = v + '%';
 	}
 	old.parentNode.replaceChild(this._N.line = neu, old);
+	return this;
 }
 sec2time(sec) {
-		var time='', s=sec, m, h;
-		if(s===Infinity) return '--:--';
-		if(false) h = 0; // Like Chrome - 000:00
-		else h = Math.floor(s/3600);
-		m = Math.floor((s = s - h*3600)/60);
-		s = Math.floor(s - m*60);
-		if(h>0)time += (h + ':');
-		//time += (h<10?('0'+h):h)+':';
-		time += (m<10?('0'+m):m)+':'+(s<10?('0'+s):s);
-		//console.log('sec2time',sec,time,h,m,s);
-		return time;
+	var time='', s=sec, m, h;
+	if(s===Infinity) return '--:--';
+	if(false) h = 0; // Like Chrome - 000:00
+	else h = Math.floor(s/3600);
+	m = Math.floor((s = s - h*3600)/60);
+	s = Math.floor(s - m*60);
+	if(h>0)time += (h + ':');
+	//time += (h<10?('0'+h):h)+':';
+	time += (m<10?('0'+m):m)+':'+(s<10?('0'+s):s);
+	//console.log('sec2time',sec,time,h,m,s);
+	return time;
 
 	//return sec;
 }
-_touch(st,e) {
-	var observe = st===true;
-	if (this._slide_observe == observe) return;
-	else this._slide_observe = observe;
-	this._N.wrp.classList[st?'add':'remove']('hover');
-	console.log(st, e.type);
+_observeMouseSeek(elem) {
+	elem.addEventListener('mouseup',this._mouse_seek.bind(this,false),false);
+	elem.addEventListener('mousedown',this._mouse_seek.bind(this,true),false);
+	elem.addEventListener('mouseleave',this._mouse_seek.bind(this,false),false);
+	elem.addEventListener('mousemove',this._mouse_move.bind(this),false);
 }
-_hover(st,e) {
+_observeTouchSeek(elem) {
+	elem.addEventListener('touchcancel',this._touch_seek.bind(this,false),false);
+	elem.addEventListener('touchstart',this._touch_seek.bind(this,true),false);
+	elem.addEventListener('touchend',this._touch_seek.bind(this,false),false);
+	elem.addEventListener('touchmove',this._touch_move.bind(this),false);
+}
+_mouse_seek(st, e) {
 	var observe = st===true;
-	if (this._slide_observe == observe) return;
-	else this._slide_observe = observe;
+	if (this._seek_observed == observe) return;
+	else this._seek_observed = observe;
 	this._N.wrp.classList[observe?'add':'remove']('hover');
-	console.log(st, e.type);
-	if(observe) this._mover(e);
+	//console.log(st, e.type);
+	if(observe) this._mouse_move(e);
 	else if(e.type=='mouseleave') console.log('cancel');
-	else console.log('submit');
+	else this._seekcomplete(this._seek_position);
 }
-_moven(e) {
-	if(!this._slide_observe) return;
-	var wrp = this._N.wrp,
-		lft = wrp.getBoundingClientRect().left,
-		rgt = wrp.offsetWidth,
-		tx = e.changedTouches[0].clientX,
-		mx = tx - lft;
-	if(mx<=0) mx = 0;
-	else if(mx>=rgt) mx = rgt;
-	var v = Math.round(1e5*mx/rgt)/1e5;
-	this._N.dot.style.left = (v*1e2)+'%';
-	console.log(mx);
+_touch_seek(st,e) {
+	var observe = st===true;
+	if (this._seek_observed == observe) return;
+	else this._seek_observed = observe;
+	this._N.wrp.classList[st?'add':'remove']('hover');
+	//console.log(st, e.type);
+	if(observe) this._touch_move(e);
+	else if(e.type=='touchcancel') console.log('cancel');
+	else this._seekcomplete(this._seek_position);
 }
-_mover(e) {
-	if(!this._slide_observe) return;
+_mouse_move(e) {
+	if(!this._seek_observed) return;
 	var x = e.offsetX,
-		w = this._N.wrp.offsetWidth,
-		v = Math.round(1e5*x/w)/1e5;
-	this._N.dot.style.left = (v*1e2)+'%';
+		w = this._N.wrp.offsetWidth;
+	this._seekmove(x/w);
+}
+_touch_move(e) {
+	if(!this._seek_observed) return;
+	var wrp = this._N.wrp,
+		tx = e.changedTouches[0].clientX,
+		dx = wrp.getBoundingClientRect().left,
+		w = wrp.offsetWidth,
+		x = tx - dx;
+	this._seekmove(x/w);
+}
+_seekcomplete(v) {
+	//console.log('submit',this._seek_position);
+	if(this._seek_callback) this._seek_callback(this._seek_position);
+	delete this._seek_position;
+	delete this._seek_observed;
+}
+_seekmove(v) {
+	var sx = v<0 ? 0 : (v>1 ? 1 : Math.round(1e5*v)/1e5);
+	this._N.dot.style.left = (sx * 1e2) + '%';
+	this._seek_position = sx;
+	//console.log(sx);
+}
+onseek(callback) {
+	if(typeof callback === 'function') this._seek_callback = callback;
+	else delete this._seek_callback;
+	return this;
 }
 };
