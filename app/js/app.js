@@ -7,7 +7,7 @@ initialize: function() {
 	this.emitter = eventEmitter();
 	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
 	this._telecasts = {};
-return;
+//return;
 	this.moduleRegister('schedule',new ModuleSchedule('mod-schedule'));
 	this.moduleRegister('passport',new ModulePassport('mod-passport'));
 	this.moduleRegister('channels',new ModuleChannels('mod-channels'));
@@ -83,18 +83,13 @@ loadChannel: function(apid) {
 	dispatchEvent('channel/load',apid);
 },
 playChannel: function(cnid) {
-	var cha = this.getChannelById(cnid),
-		source = cha.sources[0];
-	console.log('playChannel', cnid, source.src);
-	this._tvplayer.play(source.src);
-	//this._schedule.load(cnid);
-	this.router.location(cha.apid);
-	dispatchEvent('channel/play',cnid);
+	var cha = this.getChannelById(cnid);
+	console.log(cha)
+	dispatchEvent('channel/play',{apid:cha.apid});
 },
 playTelecast: function(id) {
 	console.log('playTelecast',id);
 	dispatchEvent('telecast/play',id);
-	this._tvplayer.view(id);
 },
 favor: function() {
 	this.request.archive(function(data){console.log('ARH',data)});

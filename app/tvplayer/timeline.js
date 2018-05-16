@@ -82,6 +82,7 @@ update(dt, ct) {
 	//console.log('UPD','d:'+d,'ct:'+c, v+'%', ms+'ms');
 	this._N.time.innerText = this.sec2time(c);
 	this._N.dura.innerText = this.sec2time(d);
+	this._N.dot.style.display = ms===Infinity ? 'none' : null;
 
 	var old = this._N.line,
 		neu = old.cloneNode(false);

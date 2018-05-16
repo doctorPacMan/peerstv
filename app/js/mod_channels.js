@@ -5,7 +5,9 @@ _constructor() {
 
 	this._channels = {};
 	this._list = list;
-	attachEvent('channel/load',this.onChannelView.bind(this));
+	this._scrl = list.parentNode.parentNode;
+	//attachEvent('channel/load',this.onChannelView.bind(this));
+	attachEvent('channel/play',this.onChannelPlay.bind(this));
 	//return console.log(section, list);
 }
 update(playlist) {
@@ -45,29 +47,15 @@ channelNode(cha) {
 click(cnid, event) {
 	if(event) event.preventDefault();
 	$App.playChannel(cnid);
-/*	
-	var cha = this._channels[cnid],
-		fvr = !!cha.is_favourite;
-	console.log(cnid, cha.title, !!cha.is_favourite);
-	cha.is_favourite = !cha.is_favourite;
-	var storage = window.database.storage('channels'),
-		update = {is_favourite:cha.is_favourite};
-	storage.update(cnid,update,function(itemNew,itemOut){
-		//console.log('out',itemOut);console.log('new',itemNew);
-		//console.log('cha',cha);
-		cha.node.classList[itemNew.is_favourite?'add':'remove']('starred');
-	});
-*/
 }
-onChannelView(e) {
+onChannelPlay(e) {
 	var prev = this._list.querySelector('li.focus');
 	if(prev) prev.classList.remove('focus');
 
-	var cha = $App.getChannel(e.detail),
-		cont = this._channels[cha.apid]['node'].parentNode;
-	
-	console.log('onChannelView',cont);
-	scrollIntoView(cont,this._list.parentNode.parentNode);
+	var cha = $App.getChannel(e.detail.apid),
+		node = this._channels[cha.apid]['node'],
+		cont = node.parentNode;
 	cont.classList.add('focus');
+	scrollIntoView(cont, this._scrl);
 }
 };

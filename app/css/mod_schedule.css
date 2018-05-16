@@ -36,7 +36,7 @@ section.mod-schedule > h2 + nav + div {
 .tlcbar.ps-past {
 	color: white;	
 }
-.tlcbar.ps-live s {bottom:0}
+.tlcbar.ps-live s {margin-bottom:0}
 .tlcbar.ps-live time:after {
 	display: inline-block;
 	content:'в эфире';
@@ -64,17 +64,17 @@ section.mod-schedule > h2 + nav + div {
 .tlcbar span:first-line {}
 .tlcbar s {
 	position: absolute;
-	left: 0;
+	left:0; bottom:0px;
+	margin-bottom:-3px;
 	height: 3px;
-	bottom:-3px;
-	background: rgba(200,200,200,.125);
+	background: rgba(200,200,200,.25);
 	width: 100%;
 }
 .tlcbar s > u {
 	display: block;
 	width: 75%;
 	height: 100%;
-	background: rgb(60,120,200);
+	background: rgb(255,200,0);
 }
 
 /*

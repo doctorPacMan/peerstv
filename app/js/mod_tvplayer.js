@@ -1,10 +1,28 @@
 'use strict';
 class ModuleTvplayer {
 constructor(wrapper) {
-
 	this.cnp = new Tvplayer('tvplayer-container');
-	//this.view(123811800);
-	//attachEvent('whereami',this.view.bind(this));
+	attachEvent('channel/play',this.onChannelPlay.bind(this));
+	attachEvent('telecast/play',this.onTelecastPlay.bind(this));
+}
+onChannelPlay(e) {
+	console.log('CP',e);
+	var cha = $App.getChannel(e.detail.apid),
+		source = cha.sources[0];
+	this.play(source.src);
+}
+onTelecastPlay(e) {
+	var tvid = e.detail,
+		tvs = $App.getTelecast(tvid),
+		cha = tvs ? $App.getChannelById(tvs.cnid) : null,
+		cid = cha.sources[0].contractor;
+	console.log('TP', tvs);
+
+	var locurl = $App.api.medialocator(cid>=0 ? cid : 2);
+	locurl += 'sources.json?id='+tvs.id;
+	
+	if(cid!=2) XHR.load(locurl,this.rips.bind(this));
+	else XHR.request(locurl,this.rips.bind(this));
 }
 view(id) {
 	var tvs = $App.getTelecast(id),

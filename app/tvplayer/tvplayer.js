@@ -27,13 +27,13 @@ constructor(container) {
 	this.mute(true);
 
 	var src = '//www.cn.ru/data/files/test/countdown.mp4',
-		//src = 'http://online.video.rbc.ru/online/rbctv_360p/index.m3u8',
+		src = 'http://online.video.rbc.ru/online/rbctv_360p/index.m3u8',
 		//src = 'http://hls.novotelecom.ru/streaming/cam_lunintsev_sq/16/camv/playlist.m3u8',
 		//src = 'http://hls.peers.tv/playlist/program/firstmuz/16/hd/20180428/124576907.m3u8',
 		//src = 'http://hls.peers.tv/variant_playlist/program/125982261.m3u8',
 		src = src;
 	var load = this.load.bind(this,src,false);
-	setTimeout(load,300);
+	//setTimeout(load,300);
 	//this.state(this._state = this.STATE_VIEW);
 }
 hlsPlayType() {
@@ -69,7 +69,7 @@ mute(st) {
 }
 stop() {
 	this._hlsjs.stopLoad();
-	//this.pause(true);
+	this.pause(true);
 	//this.seek(0);
 }
 load(src,autoplay) {

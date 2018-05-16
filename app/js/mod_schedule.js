@@ -24,8 +24,7 @@ onTelecastPlay(e) {
 }
 onChannelPlay(e) {
 	//console.log('onChannelPlay',e);
-	var cnid = e.detail;
-	this.channel = cnid;
+	this.channel = e.detail.apid;
 	this.days();
 	this.load();
 }
@@ -63,9 +62,9 @@ fillDates(data) {
 	//console.log(days);
 	this.focusDay(tday);
 }
-days(cnid) {
-
-	var cnid = cnid || this.channel,
+days(apid) {
+	var cha = $App.getChannel(apid || this.channel),
+		cnid = cha.channelId,
 		apiurl = $App.api.service('tv_guide').location;
 	apiurl+= 'channels.json?channel='+cnid+'&fields=scheduledDates';
 	//console.log('request.schedule', apiurl);
@@ -73,15 +72,15 @@ days(cnid) {
 		var cha = data.channels[0],
 			days = cha.scheduledDates.map(d=>Date.json(d));
 		this.fillDates(cha.scheduledDates);
-		//this.focusDay();
 	}.bind(this));
 }
-load(date,cnid) {
+load(date,apid) {
 
 	var lis = Array.from(this._list.getElementsByTagName('li'));
 	while(lis.length) {let li = lis.pop();this._list.removeChild(li)};
 
-	var cnid = cnid || this.channel,
+	var cha = $App.getChannel(apid || this.channel),
+		cnid = cha.channelId,
 		day = date ? new Date(date) : Date.current(),
 		pm = this.MORNING;
 	day.setHours((day.getHours()>=pm?pm:pm-24), 0, 0, 0);
