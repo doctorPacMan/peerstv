@@ -46,7 +46,7 @@ state(st) {
 	//if(this._state===st && st===this.STATE_IDLE) return;
 	this._stage.classList.remove('st-'+this._state.toLowerCase());
 	this._stage.classList.add('st-'+st.toLowerCase());
-	console.log('state', this._state + ' > ' + st);
+	//console.log('state', this._state + ' > ' + st);
 	this._state = st;
 	return this;
 }
@@ -77,6 +77,7 @@ load(src,autoplay) {
 	//this.trace('load '+(!this._ready ? 'defer':'start'), 'src: "'+src+'"');
 	//if(!this._ready) return this._onready_load = this.load.bind(this,src);
 	this.stop();
+	this.error(false);
 	this._hlsjs.detachMedia(this._video);
 	delete this._hls_live;
 	delete this._playready;
@@ -107,14 +108,14 @@ load(src,autoplay) {
 	//setTimeout(function(){console.log('currentTime:5');this._video.currentTime = 5;}.bind(this),1500);
 }
 play(src) {
-	console.log('PLAY',src);
+	//console.log('PLAY',src);
 	this.load(src,true);
 }
 seek(p) {
 	var d = this.duration(),
 		t = Math.round(1e3*d*p)/1e3;
 	this._video.currentTime = t;
-	console.log('SEEK', p, d, t);
+	//console.log('SEEK', p, d, t);
 }
 createVideoElement() {
 	
@@ -181,12 +182,12 @@ _event_playready(e) {
 	this._controls.timeline.duration(d);
 
 	this.state(this.STATE_VIEW);
-	if(e) console.log('playready ' + e.type);
+	//if(e) console.log('playready ' + e.type);
 	dispatchEvent('playready');
 }
 _event_waiting(st,e) {
 	if(this._is_waiting === st) return;
-	console.log('WAIT', (e?e.type:'custom'), this._is_waiting,st);
+	//console.log('WAIT', (e?e.type:'custom'), this._is_waiting,st);
 	this._stage.classList[st?'add':'remove']('ps-wait');
 	this._is_waiting = st;
 }
@@ -198,9 +199,8 @@ _event_metadata(e) {
 		vh = v.videoHeight,
 		vd = true===this._hls_live ? Infinity : v.duration,
 		dr = Math.floor(vd);
-	console.log('META', this._hls_live, e.type, vw+'x'+vh, dr);
+	//console.log('META', this._hls_live, e.type, vw+'x'+vh, dr);
 	//this._controls.text.innerText = ''+e.type+' '+vw+'x'+vh+' '+dr;
-
 	//if(!isNaN(dr) && dr>0) this._controls.dura.innerText = dr;
 }
 _hlsjs_error(e,err) {
@@ -275,9 +275,9 @@ controls() {
 	wrapper.appendChild(timeline.node);
 
 	var over = document.createElement('sup');
-	over.innerText = this._hls_type||'hlsjs';
 	over.addEventListener('click',this.pause.bind(this,null));
 	this._stage.appendChild(over);
+
 	var type = document.createElement('sub');
 	type.innerText = this._hls_type||'hlsjs';
 	this._stage.appendChild(type);

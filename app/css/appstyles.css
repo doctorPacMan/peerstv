@@ -85,6 +85,7 @@ section {
 	overflow: hidden;
 	height: 100%;
 	width: 360px;
+	z-index: 1;
 	background: rgba(53,53,53,.75);
 	box-shadow: 0 0 0 1px rgba(253,253,253,.25);
 	transition: top .25s ease 0s, opacity .25s ease 0s;

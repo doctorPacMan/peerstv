@@ -1,6 +1,6 @@
 class Timeline {
 constructor(video) {
-	console.log('Timeline',video);
+	//console.log('Timeline',video);
 	var u = document.createElement('u'),
 		b = document.createElement('b'),
 		s = document.createElement('span'),
@@ -58,7 +58,7 @@ _on_playing(e) {
 		d = this._duration,
 		t = this._video.currentTime,
 		v = Math.round(1e4*t/d)/1e2;
-	console.log('playing', p, d, t);
+	//console.log('playing', p, d, t);
 	this.paused(p);
 }
 paused(p) {
@@ -130,7 +130,7 @@ _mouse_seek(st, e) {
 	this._N.wrp.classList[observe?'add':'remove']('hover');
 	//console.log(st, e.type);
 	if(observe) this._mouse_move(e);
-	else if(e.type=='mouseleave') console.log('cancel');
+	else if(e.type=='mouseleave') {}//console.log('cancel');
 	else this._seekcomplete(this._seek_position);
 }
 _touch_seek(st,e) {

@@ -7,12 +7,13 @@ constructor(section) {
 	this.section = document.getElementById(args.shift());
 	this.hidden = this.section.classList.contains('hddn');
 	this.header = this.section.querySelector('h2');
-
-	var close = document.createElement('del');
-	if (!this.header.firstChild) this.header.appendChild(close);
-	else this.header.insertBefore(close,this.header.firstChild);
-
-	close.addEventListener('click',this.toggle.bind(this));
+	
+	if(this.header) {
+		var close = document.createElement('del');
+		if (!this.header.firstChild) this.header.appendChild(close);
+		else this.header.insertBefore(close,this.header.firstChild);
+		close.addEventListener('click',this.toggle.bind(this));
+	}
 	//this.section.addEventListener('transitionend',this.ontoggle.bind(this),true);
 	this._constructor.apply(this, args);
 }

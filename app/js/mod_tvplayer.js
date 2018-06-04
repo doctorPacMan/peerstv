@@ -6,7 +6,7 @@ constructor(wrapper) {
 	attachEvent('telecast/play',this.onTelecastPlay.bind(this));
 }
 onChannelPlay(e) {
-	console.log('CP',e);
+	//console.log(e.type, e.detail);
 	var cha = $App.getChannel(e.detail.apid),
 		source = cha.sources[0];
 	this.play(source.src);

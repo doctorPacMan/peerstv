@@ -54,18 +54,15 @@ _authorize: function() {
 	var account = this.account(),
 		refresh = account ? account.refresh : null,
 		token = this.token();
-	//console.log('authorize init token:'+token+' refresh:'+refresh);
+	console.log('authorize init token:'+token+' refresh:'+refresh);
 	//console.log(account || ('account:'+account));
 	//console.log('token restore'+(token?'restore':(refresh?'refresh':'request')));
 	
 	if(token) {
 		this._setToken(token, account.expires, account.refresh);
-		this._requestAccount();
-		this._complete();
 	} else if(refresh) {
 		this._refreshAuthToken(refresh,null);
-	}
-	else {
+	} else {
 		this._requestAuthToken(null,null);
 	}
 },
@@ -106,18 +103,16 @@ _onloadAuthToken: function(code, data, xhr) {
 
 	var expires = Date.current().setMilliseconds(data.expires_in * 1e3);
 	this._setToken(data.access_token, expires, data.refresh_token);
-	this._complete();
-	this._requestAccount();
 },
-_requestAccount: function() {
-return
+_requestAccount: function(callback) {
 	var apiurl = this.service('auth').location+'account/';
 	XHR.request(apiurl,this._onloadAccount.bind(this));
 },
 _onloadAccount: function(data) {
-	//console.log('_onloadAccount',data);
+	console.log('_onloadAccount',data);
 	var account = this.account(data);
-	dispatchEvent('account/update', account);
+	//dispatchEvent('account/update',account);
+	this._complete();
 },
 _setToken: function(token, expires, refresh) {
 	cookie.set('token', token, expires);
@@ -126,11 +121,11 @@ _setToken: function(token, expires, refresh) {
 	var xd = new Date(expires),
 		xt = xd - Date.current(),
 		xt = Math.floor(xt/1000);
-	//xt = 5;
 	if(this._refresh_timeout) clearTimeout(this._refresh_timeout);
 	this._refresh_timeout = setTimeout(this._refreshAuthToken.bind(this,refresh), xt*1e3);
 	//console.log('token '+token+' timeout '+xt+'s');
 	//console.log(this.token(), this.account().token);
+	this._requestAccount();
 },
 getAccount: function(callback) {
 	var apiurl = this.service('auth').location+'account/';

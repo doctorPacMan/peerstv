@@ -3,29 +3,30 @@
 var $App = {
 initialize: function() {
 	window.UWP = location.protocol=='ms-appx:' ? location.host : false;
-
+//return
 	this.emitter = eventEmitter();
 	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
 	this._telecasts = {};
-//return;
+
 	this.moduleRegister('schedule',new ModuleSchedule('mod-schedule'));
 	this.moduleRegister('passport',new ModulePassport('mod-passport'));
 	this.moduleRegister('channels',new ModuleChannels('mod-channels'));
+	this.moduleRegister('telecast',new ModuleTelecast('mod-telecast'));
 	attachEvent('module/toggle',this.onModuleToggle.bind(this));
-	//return;
+
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
 },
 _onready_database: function(success, indb) {
 	console.log('database',window.database);
 	this.api = new Whereami();
-	//this.api.getAuthToken();
 	this.api.init(this._onready_whereami.bind(this));
 },
 _onready_whereami:function() {
 	console.log('whereami', this.api);
+	//console.log('_account', this.api.account());
+	//return;
 	dispatchEvent('whereami');
-//return;	
 	new playlistLoader(this._onready_playlist.bind(this), function(){});
 },
 _onready_playlist: function(data) {
@@ -34,6 +35,7 @@ _onready_playlist: function(data) {
 	this.mod('passport').module.update();
 	this.mod('channels').module.update(data);
 	//this.mod('schedule').module.update();
+	//this.mod('telecast').module.test();
 	this.router.initialize();
 },
 init: function(channels) {
@@ -78,7 +80,7 @@ getChannelById: function(cnid) {
 loadChannel: function(apid) {
 	var cha = this.channels.find(v=>{return apid==v.apid}),
 		source = cha.sources[0];
-	console.log('loadChannel', cha);
+	//console.log('loadChannel', cha);
 	this._tvplayer.load(source.src);
 	dispatchEvent('channel/load',apid);
 },

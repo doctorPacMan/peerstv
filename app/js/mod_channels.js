@@ -23,7 +23,7 @@ update(playlist) {
 		this._channels[id] = {};
 		this._channels[id]['node'] = cn;
 		this._channels[id]['cont'] = li;
-		if(id=='sts') console.log(cha);
+		//if(id=='sts') console.log(cha);
 	});
 	this._list.appendChild(df);
 }
