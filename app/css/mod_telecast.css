@@ -12,6 +12,10 @@ section.mod-telecast h2 {
 	overflow: hidden;
 	position: relative;
 	height: 180px;
+	border-bottom: 1px solid black;
+	font-weight: bold;
+	line-height: 20px;
+	font-size: 16px;
 }
 section.mod-telecast h2:after {
 	content:'';
@@ -19,7 +23,7 @@ section.mod-telecast h2:after {
 	top:0; height:100%;
 	left:0; width:100%;
 	background: transparent none repeat-x 0 100%;
-	background-image: linear-gradient(0deg, rgba(0,0,0,.75), rgba(0,0,0,.25));
+	background-image: linear-gradient(0deg, rgba(0,0,0,.75), rgba(0,0,0,.25) 50%, transparent);
 }
 section.mod-telecast h2 > img {
 	object-fit: cover;
@@ -27,17 +31,23 @@ section.mod-telecast h2 > img {
 	top:0; height:100%;
 	left:0; width:100%;
 }
+
+section.mod-telecast h2 > time,
 section.mod-telecast h2 > strong {
 	position: absolute;
 	left:0px;right:0px;
-	text-shadow: 0 0 1px black;
-	padding: 5px 8px 5px;
-	line-height: 20px;
-	font-size: 16px;
+	text-shadow: 0 0 6px black;
+	padding: 5px 8px 8px;
 	z-index: 1;
+}
+section.mod-telecast h2 > time {
+	font-size: 75%;
+	top: 0;
+}
+section.mod-telecast h2 > strong {
 	bottom: 0;
 }
-section.mod-telecast p {
+section.mod-telecast article {
 	position: relative;
 	font-size: 87%;
 	overflow: hidden;
@@ -46,7 +56,7 @@ section.mod-telecast p {
 	margin: 8px 8px 0;
 	padding: 0 2px;
 }
-section.mod-telecast p {
+section.mod-telecast article.collapsed {
 	max-height: 130px;
 	border-bottom: 1px solid rgb(99,99,99);
 }

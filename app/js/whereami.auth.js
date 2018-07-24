@@ -54,7 +54,7 @@ _authorize: function() {
 	var account = this.account(),
 		refresh = account ? account.refresh : null,
 		token = this.token();
-	console.log('authorize init token:'+token+' refresh:'+refresh);
+	//console.log('authorize init token:'+token+' refresh:'+refresh);
 	//console.log(account || ('account:'+account));
 	//console.log('token restore'+(token?'restore':(refresh?'refresh':'request')));
 	
@@ -109,7 +109,7 @@ _requestAccount: function(callback) {
 	XHR.request(apiurl,this._onloadAccount.bind(this));
 },
 _onloadAccount: function(data) {
-	console.log('_onloadAccount',data);
+	//console.log('_onloadAccount',data);
 	var account = this.account(data);
 	//dispatchEvent('account/update',account);
 	this._complete();

@@ -15,8 +15,8 @@
 	<!-- <script src="WinJS/js/ui.js"></script> -->
 
 	<!-- Ссылки Winapp -->
-	<link href="app/css/css.css" rel="stylesheet" type="text/css" />
-	<!-- <link href="app/css/360.css" rel="stylesheet" type="text/css" /> -->
+	<link rel="stylesheet" type="text/css" href="app/css/css.css" />
+	<link rel="stylesheet" type="text/css" media="screen and (orientation:portrait)" href="app/css/360.css" />
 
 	<script src="app/js/utils.js"></script>
 	<script src="app/js/ajax.js"></script>
@@ -30,9 +30,9 @@
 	<link href="app/tvplayer/timeline.css" type="text/css" rel="stylesheet" />
 	<link href="app/tvplayer/tvplayer.css" type="text/css" rel="stylesheet" />
 
-	<script src="app/js/database.js"></script>
-	<script src="app/js/storage.js"></script>
-	<script src="app/js/storage_channels.js"></script>
+	<script src="app/js/db/database.js"></script>
+	<script src="app/js/db/storage.js"></script>
+	<script src="app/js/db/storage_channels.js"></script>
 
 	<script src="app/js/whereami.js"></script>
 	<script src="app/js/whereami.auth.js"></script>
@@ -55,29 +55,18 @@
 	<script src="app/js/app.router.js"></script>
 	<script src="app/js/app.request.js"></script>
 </head>
-<body class="win-type-body"><div>
+<body class="win-type-body"><div class="widescreen">
 	
 	<div class="mod-tvplayer" id="mod-tvplayer">
 		<div id="tvplayer-container"></div>
 	</div>
 	
-	<section class="mod-telecast hddn" id="mod-telecast">
-	<div><div>
-		<h2>
-			<img src="//peers.tv/data/images/imgs/2017/04/06/92943/92943399.jpg">
-			<strong>Маленькое королевство Бена и Холли (Ben and Holly's Little Kingdom)</strong>
-		</h2>
-		<p>В чудесном маленьком королевстве, спрятанном в зарослях диких ягод, живут добрые феи и эльфы. Эти сказочные существа совсем крошечные, но очень симпатичные и дружелюбные. Холли — фея‑принцесса, которая умеет летать. А малыш Бен — эльф, ее лучший друг. Юная фея учится владеть магией, но иногда ее заклинания работают не совсем так, как было задумано. Бен не умеет колдовать, но зато способен создавать разные вещи — особенно хорошо у него получаются игрушки. Дополняет веселый союз принцессы и эльфа божья коровка по имени Гастон. Каждый день друзья вместе играют и веселятся, с ними постоянно случаются забавные приключения.</p>
-		<h5>Другие выпуски</h5>
-		<h5>Похожее</h5>
-	</div></div>
-	</section>
-
 	<aside>
 		<div>
 		<a class="favr" style="display:none" onclick="$App.favor()" href="#favourites"><span>Избранное</span></a>
 		<a class="list" data-section="channels"><span>Все каналы</span></a>
 		<a class="schd" data-section="schedule"><span>Программа</span></a>
+		<a class="info" data-section="telecast"><span>Передачка</span></a>
 		<a class="cams" style="display:none" href=""><span>Перекрёстки</span></a>
 		</div>
 		<!-- div>
@@ -93,6 +82,19 @@
 		</div>
 	</aside>
 	
+	<section class="mod-telecast hddn" id="mod-telecast">
+	<div><div>
+		<h2>
+			<img src="//peers.tv/data/images/imgs/2017/04/06/92943/92943399.jpg">
+			<time>30 sasassa 12:33</time>
+			<strong>Маленькое королевство Бена и Холли (Ben and Holly's Little Kingdom)</strong>
+		</h2>
+		<article>В чудесном маленьком королевстве, спрятанном в зарослях диких ягод, живут добрые феи и эльфы. Эти сказочные существа совсем крошечные, но очень симпатичные и дружелюбные. Холли — фея‑принцесса, которая умеет летать. А малыш Бен — эльф, ее лучший друг. Юная фея учится владеть магией, но иногда ее заклинания работают не совсем так, как было задумано. Бен не умеет колдовать, но зато способен создавать разные вещи — особенно хорошо у него получаются игрушки. Дополняет веселый союз принцессы и эльфа божья коровка по имени Гастон. Каждый день друзья вместе играют и веселятся, с ними постоянно случаются забавные приключения.</article>
+		<!-- h5>Другие выпуски</h5>
+		<h5>Похожее</h5 -->
+	</div></div>
+	</section>
+
 	<section class="mod-passport hddn" id="mod-passport">
 		<h2><u>Account</u><button>Login</button></h2>
 		<div><div>

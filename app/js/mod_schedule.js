@@ -5,26 +5,33 @@ _constructor(){
 	this.MORNING = 6;
 	this._list = this.section.querySelector('ol.schedule');
 	this._days = this.section.querySelector('.progdays > div');
-	attachEvent('channel/play',this.onChannelPlay.bind(this));
+	attachEvent('channel/load',this.onChannelLoad.bind(this));
+	attachEvent('channel/play',this.onChannelLoad.bind(this));
 	attachEvent('telecast/play',this.onTelecastPlay.bind(this));
+	attachEvent('module/toggle',this.onToggle.bind(this));
 	//this.test();
 }
 test() {}
+onToggle(e) {
+	if(this.apid!==e.detail) return;
+	if(this.hidden || !this.channel) return;
+	console.log('TGL', this.apid, this.channel);
+	this.onChannelLoad(null);
+}
 onTelecastPlay(e) {
-	var bl = this._list.querySelector('li.crnt'),
-		id = e.detail,
+	var id = e.detail,
+		bl = this._list.querySelector('li.crnt'),
 		li = this._list.querySelector('li#r'+id);
-	
 	if(li!=bl) {
 		if(bl) bl.classList.remove('crnt');
 		li.classList.add('crnt');
 	}
-	
 	console.log('onTelecastPlay',id,li);
 }
-onChannelPlay(e) {
-	//console.log('onChannelPlay',e);
-	this.channel = e.detail.apid;
+onChannelLoad(e) {
+	if(e) this.channel = e.detail.apid;
+	if(this.hidden) return;
+	//console.log('onChannelLoad',e);
 	this.days();
 	this.load();
 }
@@ -100,9 +107,9 @@ onload(day, data) {
 		day_from = (new Date(day)).setHours(this.MORNING, 0, 0),
 		day_ends = (new Date(day)).setHours(this.MORNING+24, 0, 0),
 		cnid = data.channelId,
-		cha = $App.getChannelById(cnid);
-console.log('PPPP',cha.apid);
-	//console.log(new Date(day_from), new Date(day_ends));
+		cha = $App.getChannelById(cnid),
+		arc = !!cha.sources[0].recordable;
+
 	data.telecastsList.forEach(v=>{
 		//var tvs = this.attachTelecast(v, now, ntz);
 		var tvs = $App.registerTelecast(v);
@@ -126,12 +133,13 @@ console.log('PPPP',cha.apid);
 
 		if(tvs.state!='PAST') a.appendChild(bar);
 		if(tvs.state=='LIVE') a.classList.add('ps-live');
-		if(tvs.state!='SOON') a.classList.add('ps-past');
+		else if(tvs.state!='SOON') a.classList.add('ps-past');
 
 		li.setAttribute('id','r'+tvs.id);
 		li.appendChild(a);
 		df.appendChild(li);
 	});
+	this._list.classList[!arc ? 'add':'remove']('not-archive');
 	this._list.appendChild(df);
 	this.focusDay(day);
 }

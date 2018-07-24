@@ -79,6 +79,12 @@ playlistM3U8.prototype = {
 
 		return !valid ? false : line;
 	},
+	_parseMagnetSource: function(source) {
+		var md = decodeURIComponent(source),
+			mv = md.replace('magnet:?xt=urn:','');
+		//console.log('P2P',decodeURIComponent(mv));
+		return source;
+	},
 	_parseEmbedSource: function(source) {
 		var rs = this._regexp_embed_source.exec(source);
 		if(rs && rs[1]) return decodeURIComponent(rs[1]);
@@ -137,8 +143,11 @@ playlistM3U8.prototype = {
 			type = 'hls';
 
 		if(!cnid && !name) return;// console.log(src);
-		if(source.indexOf('magnet:')==0) return type = 'p2p'; // skip magnet
-		else if(source.indexOf('udp:')==0) return type = 'udp'; // skip UDP
+		if(source.indexOf('udp:')==0) return type = 'udp'; // skip UDP
+		else if(source.indexOf('magnet:')==0) {
+			source = this._parseMagnetSource(source);
+			type = 'p2p';
+		}
 		else if(source.indexOf('embed:')==0) {
 			source = this._parseEmbedSource(source);
 			type = 'embed';

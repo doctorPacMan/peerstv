@@ -1,56 +1,121 @@
 "use strict";
-var playlistLoader = function() {return this.initialize.apply(this,arguments)};
-playlistLoader.prototype = {
+if(!window.cnapi) window.cnapi = {request:{},provider:{conf:{}}};
+cnapi.request.playlist = function(callback, onerror) {return new this.playlistLoader(callback, onerror)};
+cnapi.request.playlistLoader = function() {return this.initialize.apply(this,arguments)};
+cnapi.request.playlistLoader.prototype = {
 	TRACE: false,
-	CACHE: true,
-	initialize: function(callback, onerror) {
+	ajax: function(url, onComplete, postBody, cid) {
 
-		this._storage = window.database.storage('channels');
-		
-		if(!this.CACHE) this._request(callback, onerror);
-		else this._storage.getAll(function(channels) {
-			if(channels.length>0) callback(channels);
-			else this._request(callback, onerror);
-		}.bind(this));
+		var postBody = postBody!==undefined ? postBody : null,
+			token = cnapi ? cnapi.provider.getAuthToken() : null,
+			playlist_request = (cid!==undefined),
+			xhr = new XMLHttpRequest();
+
+		// Inetra playlist cache buster
+		if(playlist_request && cid==2) {
+			let vu = new URL(url);
+			vu.searchParams.set('cb',Date.now());
+			url = vu.href;
+		}
+
+		xhr.open(postBody?'POST':'GET', url, true);
+		if(!playlist_request) {
+			if(postBody) xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+			if(token) xhr.setRequestHeader('Authorization','Bearer ' + token);
+		} else {
+			if(cid==2) {
+				let capabilities = 'paid_content,adult_content';
+				if(window.Bytefog) capabilities += ',bytefog';
+				xhr.setRequestHeader('Client-Capabilities',capabilities);
+				if(token) xhr.setRequestHeader('Authorization','Bearer ' + token);
+			}
+			xhr.addEventListener('timeout', this.onLoadingError.bind(this,cid,url));
+			xhr.addEventListener('error', this.onLoadingError.bind(this,cid,url));
+			xhr.addEventListener('load', this.onLoadingError.bind(this,cid,url));
+			xhr.timeout = 15000;
+		}
+
+		xhr.onreadystatechange = function(){
+			if (xhr.readyState != 4) return;
+			else if(xhr.status != 200) onComplete(false,xhr);
+			else {
+				var json, text = xhr.responseText;
+			    if(/^(?:\{|\[|\")/.test(text))
+				    try {json = JSON.parse(xhr.responseText)}
+				    catch(e) {console.log('JPError',e,text)};
+				onComplete(json || text, xhr);
+			}
+		};
+		return xhr.send(postBody);
 	},
-	_request: function(callback, onerror) {
+	initialize: function(callback, onerror) {
+		var whereami = cnapi.whereami;
+		if(!whereami) {
+			whereami = window.whereami.data;
+			whereami.host = window.whereami.host;
+			cnapi.provider = {getAuthToken:window.whereami.token.bind(window.whereami)};
+		}
 
-		var whereami = $App.api,
-			contractorId = whereami.contractor().contractorId,
-			appterritory = whereami.territory(),
-			serviceUserdata = whereami.service('user_data'),
-			serviceTvguide = whereami.service('tv_guide'),
-			serviceIptv = whereami.iptv();
+		var contractorId = whereami.contractor ? whereami.contractor.contractorId : undefined,
+			serviceUserdata = whereami.services.filter(function(s){return s.type=='user_data'}),
+			serviceTvguide = whereami.services.filter(function(s){return s.type=='tv_guide'}),
+			serviceIptv = whereami.services.filter(function(s){return s.type=='iptv'}),
+			territories = Array.from(whereami.territories || []),
+			territory = Object.assign({},territories[0]);
 
-		this._apiurl = whereami.host;
+		this._apiurl = '//'+whereami.host;
 		this._callback = callback;
 		this._onerror = onerror;
-		this._territories = [].concat(whereami.territories || []);
-		this._territoryId = appterritory.territoryId;
-		this._territoryTz = appterritory.timezone;
+		this._territories = territories;
+		this._territoryId = territory.territoryId;
+		this._territoryTz = territory.timezone;
 		this._contractorId = contractorId;
 		this._playlist;
 		this._userdata = {};
-		this._tvguide = serviceTvguide.location;
+		this._tvguide = null;
 		this._favorite = null;
 		this._channels = null;
 		this._sources = {};
 		this._xtimer = new Date();
 
+		var userdata = {}, usdapiurl;
+		serviceUserdata.forEach(function(g){
+			var cid = g.contractor.contractorId,
+				apv = g.apiVersions.length ? g.apiVersions[g.apiVersions.length-1] : null;
+			userdata[cid] = null===apv ? undefined : apv.location;
+		});
+		if(userdata[contractorId]) usdapiurl = userdata[contractorId];
+		else if(userdata[2]) usdapiurl = userdata[2];
+		else usdapiurl = userdata[Object.keys(userdata)[0]];
+
+		var tvguides = {};
+		serviceTvguide.forEach(function(g){
+			var cid = g.contractor.contractorId,
+				apv = g.apiVersions.length ? g.apiVersions[g.apiVersions.length-1] : null,
+				src = null===apv ? undefined : apv.location;
+			tvguides[cid] = src;
+		});
+		if(tvguides[contractorId]) this._tvguide = tvguides[contractorId];
+		else if(tvguides[2]) this._tvguide = tvguides[2];
+		else this._tvguide = tvguides[Object.keys(tvguides)[0]];
+		//this._tvguide = tvguides;
+
 		var playlists = {};
 		serviceIptv.forEach(function(g){
-			playlists[g.cid] = {cid:g.cid, src:g.src, data:null};
+			var cid = g.contractor.contractorId,
+				apv = g.apiVersions.length ? g.apiVersions[g.apiVersions.length-1] : null,
+				src = null===apv ? undefined : apv.location;
+			playlists[cid] = {cid:cid,src:src,data:null};
 		});
 		
-		//playlists = this._prov_playlist(playlists, 0);
-		//playlists = this._extra_playlist(playlists,1549);
+		//playlists = this._prov_playlist(playlists,0);
+		playlists = this._extra_playlist(playlists,1549);
 		setTimeout(this._load_playlists.bind(this,playlists),12);
-		setTimeout(this._load_favorites.bind(this,serviceUserdata.location),12);
-
+		setTimeout(this._load_favorites.bind(this,usdapiurl),12);
 	},
 	_prov_playlist: function(playlists, contractorId) {
 		var cid = contractorId>=0 ?  contractorId : this._contractorId,
-			src = '/data/playlist.m3u8';
+			src = '//a.cha.ptv.bender.inetra.ru/data/bad.m3u';
 		playlists[cid] = {cid:cid, src:src, data:null};
 		console.warn('additional playlist ('+src+')');
 		return (playlists);
@@ -78,12 +143,8 @@ playlistLoader.prototype = {
 			if(complete) this._onload_playlists(playlists);
 		};
 		for(var cid in playlists) {
-			//this.trace('request:', cid, playlists[cid].src);
-			//this.ajax(playlists[cid].src, handler.bind(this,cid), undefined, cid);
-		}
-		for(var cid in playlists) {
 			this.trace('request:', cid, playlists[cid].src);
-			XHR.playlist(cid, playlists[cid].src, handler.bind(this,cid));
+			this.ajax(playlists[cid].src, handler.bind(this,cid), undefined, cid);
 		}
 	},
 	_onload_playlists: function(playlists) {
@@ -137,25 +198,25 @@ playlistLoader.prototype = {
 			if(ct>=0) tids.splice(ct,1);
 		});
 
-		if(!tids.length) return callback();
-
-		var apiurl = '//'+this._apiurl+'/registry/2/territories.json?id='+tids.join(',');
-		this.trace('territory:',tids.join(', '));
-		XHR.load(apiurl,function(data){
+		if(!tids.length) callback();
+		else {
+			var apiurl = ''+this._apiurl+'/registry/2/territories.json?id='+tids.join(',');
+			this.trace('territory:',tids.join(', '));
+			this.ajax(apiurl,function(data){
 				//console.log(data);
 				if(!data || !data.territories.length) return callback();
 				this._territories = this._territories.concat(data.territories);
 				//console.log(this._territories);
 				callback();
 			}.bind(this));
-		
+		}
 	},
 	_load_idbytitle: function(channelsAll, playitems) {
 		var apiurl = this._tvguide + 'idbytitle.json',
 			titles = playitems.map(v => {return v.name}),
 			postBody = JSON.stringify({'titles':titles}),
 			callback = this._onload_idbytitle.bind(this,channelsAll,playitems);
-		XHR.load(apiurl,callback,postBody);
+		this.ajax(apiurl,callback,postBody);
 	},
 	_onload_idbytitle: function(channelsAll, playitems, data) {
 		var channels = data ? data.channels : [];
@@ -176,7 +237,6 @@ playlistLoader.prototype = {
 		this._load_channels(channelsAll);
 	},
 	_load_favorites: function(usdapiurl) {
-		//return this.onComplete();
 		var apiurl = usdapiurl+'favourites/tv/channels/?method=list&format=json',
 			handler = function(data, xhr) {
 				if(data===false || !data.elements) this._favorite = [];
@@ -184,15 +244,16 @@ playlistLoader.prototype = {
 				this.trace('favourite:',this._favorite.join(', '));
 				this.onComplete();
 			}.bind(this);
-		XHR.request(apiurl, handler);
+		this.ajax(apiurl, handler, {});
 	},
 	_load_channels: function(channelsList) {
 		var apiurl = this._tvguide,
-			fields = 'alias,title,logoURL,hasSchedule';
+			fields = 'alias,title,hasSchedule,description,info,logoURL';
 		apiurl += 'channels.json?t='+this._territoryId;
 		apiurl += '&fields='+fields;
 		apiurl += '&channel='+channelsList.join(',');
-		XHR.load(apiurl,function(data,xhr){
+		var pushChannel = this.pushChannel.bind(this);
+		this.ajax(apiurl,function(data,xhr){
 			this._channels = [];
 			if(data) data.channels.forEach(json=>{
 				var cnid = json.channelId.toString(),
@@ -201,7 +262,6 @@ playlistLoader.prototype = {
 			});
 			this.onComplete();
 		}.bind(this));
-
 	},
 	pushChannel: function(cnid, position, json) {
 		var data = Object.assign({
@@ -211,8 +271,7 @@ playlistLoader.prototype = {
 			},json);
 
 		data.channelId = cnid;
-
-		data.sources.forEach(s=>this.setSourceWeight(s));
+		data.sources.forEach(s=>this.setSourceWeight(s));// set weight & timezone
 		data.sources.sort((a,b)=>{return b.weight - a.weight});
 
 		var src = data.sources[0];
@@ -226,32 +285,38 @@ playlistLoader.prototype = {
 		return dc;
 	},
 	setSourceWeight: function(source) {
-		//console.log('setweight:',source);
 		var cid = source.contractor,
-			ctz = parseInt(this._territoryTz/60, 10),
+			ctz = parseInt(this._territoryTz,10),
 			embedtype = (source.type === 'embed'),
+			p2psource = (source.type === 'p2p'),
 			homegrown = (cid == this._contractorId),
 			paidAllow = (!!source.paid && !source.locked),
-			weight = 0;
+			tzfactor = 0,
+			weight = 1;
 	
 		if(paidAllow) weight += 12;
 		if(homegrown) weight += 10;
 		if(embedtype) weight += 8;
+		if(p2psource) weight += 1;
 
 		var tid = source.territory,
 			ter = this._territories.find(t=>{return t.territoryId===source.territory}) || {},
-			stz = parseInt(ter.timezone,10)/60,
-			distance = isNaN(stz) ? 1 : Math.abs(ctz - stz)/72/10,
-			tzfactor = distance>=1 ? .999 : (distance<=0 ? .001 : distance),
+			ttz = parseInt(ter.timezone,10);
+		
+		if(!isNaN(ctz)) {
+			let distance = isNaN(ttz) ? 1 : Math.abs((ctz - ttz)/60)/72/10;
+			tzfactor = distance>=1 ? .999 : (distance<=0 ? .001 : distance);
 			tzfactor = Math.round((1 - tzfactor)*1e3)/1e3;
-		weight += tzfactor;
+			weight += tzfactor;
+		}
 
 		var trace = 'paidAllow:'+paidAllow+' homegrown:'+homegrown+' ('+this._contractorId+'/'+cid+')';
-		trace += '\nterritory:'+tzfactor+' '+ter.name;
+		trace += '\nterritory: '+ter.name+' ('+tzfactor+')';
 		trace += '\nweight:'+weight;
-		
-		//if(source.cnid=='65667067') {console.log(source);console.log(trace)};
 		source['weight'] = weight;
+		if(!isNaN(ttz)) source['timezone'] = ttz;
+		//if(source.cnid=='10338257') {console.log(source);console.log(trace)};
+		//if(source.cnid=='10338258') {console.log(source);console.log(trace)};		
 		return source;
 	},
 	onComplete: function(channels) {
@@ -268,17 +333,12 @@ playlistLoader.prototype = {
 		console.log('completed:', time+'ms.', this._channels.length+' items');
 		delete this._xtimer;
 
-if(false) {
-console.log(this.getChannelById('65667067').sources);//DOGM
-console.log(this.getChannelById('23643734').sources);//OTP
-console.log(this.getChannelById('28036134').sources);//PBY
-}
-//console.log('fill',this._channels);
-		if(this.CACHE) this._storage.fill(this._channels,function(success, count){
-				console.log('save '+count+' items');
-				this._callback(this._channels);
-			}.bind(this));
-		else this._callback(this._channels);
+//console.log(this.getChannelById('65667067').sources);//DOGM
+//console.log(this.getChannelById('23643734').sources);//OTP
+//console.log(this.getChannelById('28036134').sources);//PBY
+		
+		if(typeof this._callback === 'function') this._callback(this._channels);
+		else console.log(this._channels);
 	},
 	onLoadingError: function(cid, url, e) {
 		if(e.type=='load' && e.target.status==200) return;

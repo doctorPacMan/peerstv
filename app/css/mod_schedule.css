@@ -22,8 +22,6 @@ section.mod-schedule > h2 + nav + div {
 	padding: 5px 5px 6px 0;
 	font-size: 14px;
 	line-height: 16px;
-	color: rgb(160,160,160);
-	cursor: pointer;
 	display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
@@ -33,9 +31,18 @@ section.mod-schedule > h2 + nav + div {
 	position: relative;
 	overflow: hidden;
 }
+.tlcbar,
+.tlcbar:link,
+.tlcbar:visited {color: rgb(160,160,160)}
+.tlcbar.ps-live,
 .tlcbar.ps-past {
-	color: white;	
+	color: white;
+	cursor: pointer;
 }
+.schedule.not-archive .tlcbar.ps-past {
+	color: rgb(160,160,160);
+}
+
 .tlcbar.ps-live s {margin-bottom:0}
 .tlcbar.ps-live time:after {
 	display: inline-block;

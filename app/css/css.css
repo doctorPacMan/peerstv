@@ -7,8 +7,7 @@
 @import url("mod_schedule.css");
 @import url("mod_passport.css");
 @import url("mod_telecast.css");
-@media all and (orientation:landscape) or (orientation:portrait)
-{
+@media all and (orientation:landscape) or (orientation:portrait) {
     /* styles here */
 }
 :root {

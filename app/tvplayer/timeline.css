@@ -24,9 +24,15 @@
 	margin-top: -2px;
 	background-color: rgb(0,150,255);
 }
+.timeline > u {
+	top: 50%;
+	height: 4px;
+	margin-top: -2px;
+	background-color: rgb(0,150,255);
+}
 .timeline:before {background-color: rgba(222,222,222,.22)}
 .timeline > u {
-	width: 25%;
+	width: 4px;
 	box-shadow: 0px 1px 1px 0px rgba(0,0,0,.25);
 	animation: timeline-s 4s 0s 1 linear normal forwards running;
 	animation-play-state: paused;
@@ -40,6 +46,30 @@
 	background-color: rgba(255,255,255,1);
 	border: 1px solid rgb(0,150,255);
 }
+.timeline > sup {
+	position: absolute;
+	left:0;width:48px;
+	top:0;height:22px;
+	line-height: 22px;
+	margin: -23px 0 0 -24px;
+	background-color: rgba(25,25,25,.5);
+	border-bottom: 2px solid rgb(0,150,255);
+	pointer-events: none;
+	font-size: 82%;
+	color: white;
+}
+.timeline > sup:after {
+	content:'';
+	position: absolute;
+	width: 0px;left:50%;
+	height: 0px;top:100%;
+	border: 10px solid red;
+	margin: 2px 0 0 -10px;
+	border-color: rgb(0,150,255) transparent;
+	border-bottom-width: 0;
+}
+.timeline > sup {display:none}
+.timeline.hover > sup {display:unset}
 
 .timeline > span,
 .timeline > time {
@@ -67,80 +97,6 @@
 	display: none;
 }
 
-/*
-.cntrls > div {
-	position: absolute;
-	left:0;right:0;
-	top:0;
-	height: 20px;
-	overflow: visible;
-	padding: 0px 0px;
-	margin: 0 12px 12px;
+.timeline.paused > u {
+	background-color: rgb(150,200,255) !important;
 }
-.cntrls > div:before,
-.cntrls > div:after,
-.cntrls > div > u,
-.cntrls > div > b {
-	content: '';
-	position: absolute;
-	width:100%;top:0px;
-	left:0;height:100%;
-}
-.cntrls > div:after {
-	background:rgba(200,255,200,0);
-}
-.cntrls > div:before,
-.cntrls > div > u {
-	margin-top: 8px;
-	height: 4px;
-}
-.cntrls > div:before {
-	background-color: rgb(222,222,222,.22);
-}
-.cntrls > div > u {
-	box-shadow: 0px 1px 1px 0px rgba(0,0,0,.25);
-	background-color: rgb(0,150,255);
-	width: 75%;
-}
-.cntrls > div > b {
-	left:0px;width:18px;
-	top:50%;height:18px;
-	border-radius: 50%;
-	margin: -10px 0 0 -8px;
-	background-color: white;
-	border: 1px solid rgb(0,150,255);
-	left:33%;
-	transition: all .125s linear 0s;
-}
-.cntrls > div > b {
-	width:8px;height:8px;
-	margin:-5px 0 0 -4px;
-}
-.cntrls > div:hover > b {
-	width:18px;
-	height:18px;
-	margin: -10px 0 0 -8px;
-}
-.cntrls > div > span,
-.cntrls > div > time {
-	position: absolute;
-	left:0px;width:auto;
-	top:100%;height:15px;
-	font-weight: lighter;
-	line-height: 15px;
-	font-size: 82%;
-	text-shadow: 0 0 2px rgba(0,0,0,1);
-	margin: 0 -4px;
-	color: white;
-}
-.cntrls > div > time + time {
-	left:auto;
-	right:0;
-}
-.cntrls > div > span {
-	left: 0px;
-	right: 0px;
-	margin: 0 48px;
-	background: rgba(200,255,200,.000125);
-}
-*/

@@ -1,12 +1,12 @@
 "use strict";
-// {id: 84894, name: "doctorpacman@ya.ru", expires: 1521889230000, refresh: "01164a074881b3ef97cea324bbf14e5c", token: "30413de2557f7be16af6699727b470cf"}
 var $App = {
 initialize: function() {
 	window.UWP = location.protocol=='ms-appx:' ? location.host : false;
-//return
+
 	this.emitter = eventEmitter();
 	this._tvplayer = new ModuleTvplayer('mod-tvplayer');
 	this._telecasts = {};
+	//return;
 
 	this.moduleRegister('schedule',new ModuleSchedule('mod-schedule'));
 	this.moduleRegister('passport',new ModulePassport('mod-passport'));
@@ -16,27 +16,36 @@ initialize: function() {
 
 	window.database = new Database('database',1).open();
 	window.database.onready(this._onready_database.bind(this));
+	window.addEventListener('resize',this.resize.bind(this,false));
+	this.resize();
 },
 _onready_database: function(success, indb) {
-	console.log('database',window.database);
-	this.api = new Whereami();
+	//console.log('database', window.database);
+	this.api = window.whereami = new Whereami();
 	this.api.init(this._onready_whereami.bind(this));
 },
 _onready_whereami:function() {
-	console.log('whereami', this.api);
+	//console.log('whereami', this.api);
 	//console.log('_account', this.api.account());
 	//return;
 	dispatchEvent('whereami');
-	new playlistLoader(this._onready_playlist.bind(this), function(){});
+	//this.mod('telecast').module.test();
+	//var s = window.database.storage('channels');
+	//new playlistLoader(this._onready_playlist.bind(this), function(){});
+	new cnapi.request.playlistLoader(this._onready_playlist.bind(this), function(){});
 },
 _onready_playlist: function(data) {
-	console.log('playlist', data.length);
+	//console.log('playlist', data.length);
+	//var s = window.database.storage('channels');
+	//return console.log('SS',s.fill(data));
 	this.channels = data;
 	this.mod('passport').module.update();
 	this.mod('channels').module.update(data);
 	//this.mod('schedule').module.update();
-	//this.mod('telecast').module.test();
 	this.router.initialize();
+},
+resize: function() {
+	//console.log('resize');
 },
 init: function(channels) {
 	//console.log(this.api);
@@ -66,7 +75,13 @@ setAuthToken: function() {
 getTelecast: function(id) {
 	return this._telecasts[id] || null;
 },
-registerTelecast: function(json) {
+registerTelecast: function(json, cnid) {
+	if(cnid) {
+		if(!json.channel) json.channel = {channelId:cnid};
+		else if(json.channel.channelId) {console.warn('cnid override')}
+		else json.channel.channelId = cnid;
+	}
+	
 	var tvshow = new Tvshow(json);
 	this._telecasts[tvshow.id] = tvshow;
 	return tvshow;
@@ -82,7 +97,7 @@ loadChannel: function(apid) {
 		source = cha.sources[0];
 	//console.log('loadChannel', cha);
 	this._tvplayer.load(source.src);
-	dispatchEvent('channel/load',apid);
+	dispatchEvent('channel/load',{apid:cha.apid});
 },
 playChannel: function(cnid) {
 	var cha = this.getChannelById(cnid);
@@ -90,7 +105,7 @@ playChannel: function(cnid) {
 	dispatchEvent('channel/play',{apid:cha.apid});
 },
 playTelecast: function(id) {
-	console.log('playTelecast',id);
+	//console.log('playTelecast',id);
 	dispatchEvent('telecast/play',id);
 },
 favor: function() {

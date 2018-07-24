@@ -7,6 +7,75 @@
 	left:0;width: 100%;
 	top:0;height: 100%;
 }
+.tvplayer > header {
+	position: absolute;
+	left:0px;right:0px; 
+	top:0; height:48px;
+	padding: 8px 8px 16px;
+	background: rgba(0,0,0,.005) none repeat-x 0 0;
+    background-image: linear-gradient(180deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.125) 70%, transparent);
+	text-shadow: 1px 1px 1px black;
+	white-space: nowrap;
+	line-height: 20px;
+	font-size: 14px;
+	color: white;
+}
+.tvplayer > header > i,
+.tvplayer > header > i:after,
+.tvplayer > header > i > img {
+	display: block;
+	overflow: hidden;
+	position: relative;
+	left:0; width:100%;
+	top:0; height:100%;
+	border-radius: 4px;
+}
+.tvplayer > header > i:after,
+.tvplayer > header > i > img {border-radius: inherit}
+.tvplayer > header > i {
+	float: left;
+	width: 48px;
+	height: 48px;
+	background: gray;
+	margin-right: 8px;
+}
+.tvplayer > header > i:after {
+	content:'';
+	position: absolute;
+	box-shadow: inset 0 0 0 1px rgba(250,250,250,.35);
+	background: transparent none repeat-x 0 100%;
+	background-image: linear-gradient(180deg, rgba(255,255,255,.25), transparent);
+}
+.tvplayer > header > i > img {}
+.tvplayer > header > b {
+	display: block;
+	font-size: 18px;
+	font-weight: 200;
+	margin: 5px 0 3px;
+}
+.tvplayer > header > time,
+.tvplayer > header > span {
+	display: inline-block;
+}
+.tvplayer > header > time {
+	color: lightgray;
+	margin-right: .5em;
+}
+.tvplayer > header > span {}
+
+.tvplayer > header {
+	top:-72px;
+	transition: top .5s ease;
+}
+.tvplayer.hover > header {top:0}
+
+
+
+
+
+
+
+
 .tvplayer > video {
 	display: block;
 	position:relative;
@@ -19,13 +88,14 @@
 .tvplayer > p {
 	position: absolute;
 	left: 50%;top:0;
-	width: 350px;
-	height: 40px;
+	width: 332px;
 	padding: 9px 8px 9px 0;
-	margin: 24px 0 0 -180px;
-	font: bold 12px/15px sans-serif;
+	padding: 8px;
+	margin: 0px 0 0 -175px;
+	font: bold 14px/15px monospace;
 	background: rgba(90,50,50,.75);
 	border: 1px solid darkred;
+	text-align: center;
 	color: darkgray;
 	overflow: hidden;
 }
@@ -38,6 +108,22 @@
 	width: 60px;
 	float: left;
 }
+.tvplayer > p > span {
+	display: block;
+	text-align: left;
+	min-height: 40px;
+	margin: 0 0 12px;
+	overflow: hidden;
+}
+.tvplayer > p > button {
+	width: 80px;
+	height: 24px;
+	padding: 0;
+	margin: 0 6px;
+	font-size: 14px;
+}
+.tvplayer > p > button + button {
+}
 .tvplayer > sub {
 	position: absolute;
 	right:auto;left: 0;
@@ -46,19 +132,25 @@
 	font: 12px/12px monospace;
 	text-shadow: 1px 1px 1px black;
 }
+.tvplayer > sub + sub {
+	left:auto;right:0;
+	white-space: pre;
+}
 .tvplayer > sup {
 	position: absolute;
 	left:0px;right:0px;
 	top:0px;bottom:0px;
+	border: 1px solid cyan;
+	font: 12px/12px monospace;
+	text-shadow: 1px 1px 1px black;
+	padding: 6px;
+}
+.tvplayer > sup.xxx {
     background: transparent none repeat 0 0;
     background-image:
     	linear-gradient(90deg, transparent 0%, transparent 50%, rgba(30,40,70,.25) 50%, rgba(30,40,70,.25)),
     	linear-gradient(180deg, transparent 0%, transparent 50%, rgba(30,40,70,.25) 50%, rgba(30,40,70,.25));
 	background-size: 2px 2px;
-	border: 1px solid cyan;
-	font: 12px/12px monospace;
-	text-shadow: 1px 1px 1px black;
-	padding: 6px;
 }
 
 .tvplayer > s {background: rgba(53,53,53,0)}

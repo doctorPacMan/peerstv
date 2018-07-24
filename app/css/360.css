@@ -1,14 +1,22 @@
-body > div {
+body.off > div {
 	right: auto;left: 50%;
 	bottom: auto;top: 0px;
 	width: 360px;
 	height: 560px;
 	margin: 10px 0 0 -180px;
 }
+body > div {
+	width: 100%;
+	margin: 0;
+}
 aside {
 	height: 48px;
 	width: 100%;
+	top:auto;
+	bottom:0;
 	background:rgb(53,53,53);
+	background:black;
+	border-top: 1px solid gray;
 }
 aside > div {display:inline}
 aside a {
@@ -28,51 +36,56 @@ aside a:before {
 	display:block;
 	margin: 12px auto 0;
 }
+/* Section */
+section {
+	width: 100%;
+	height: calc(100% - 48px);
+}
+/* Player */
 .mod-tvplayer {
-	bottom:auto;top:48px;
+	bottom:auto;top:0px;
 	right:auto;left:0px;
-	height: 270px;
 	width: 360px;
 	height: 270px;
-	height: 225px;
 	height: 202px;
+	height: 225px;
+	width: 100%;
+}
+.mod-tvplayer > header {
+	height: 32px;
+	padding: 4px 4px 8px;
+	font-size: 12px;
+	line-height: 15px;
+}
+.mod-tvplayer > header > i {
+	width: 32px;
+	height: 32px;
+	margin-right: 4px;
+	border-radius: 2px;
+}
+.mod-tvplayer > header > b {
+	font-size: 14px;
+	margin: 1px 0 0px;
+}
+.mod-tvplayer > header > time {display:none}
+.mod-tvplayer > header > span {color:lightgray}
+.mod-tvplayer .cntrls {padding-bottom: 0}
+.mod-tvplayer .tvplayer > button {display:none}
+/* Schedule */
+section.mod-schedule {
+	xtop: 225px;
+	width: 100%;
+}
+
+/* Telecast */
+section.mod-telecast,
+section.mod-telecast.hddn {
+	top: 225px;
+	opacity: 1;
+}
+section.mod-telecast h2 {
+	display: none;
 }
 section.mod-channels {
 	left: 0;
-}
-section.mod-showdesc {
-	height: auto;
-	width: auto;
-	top:250px;width:100%;
-	bottom:0px; left:0px;
-	background:rgba(53,53,53,.95);
-}
-section.mod-showdesc > div > div {
-	padding: 8px 12px 12px;
-	font-size: 15px;
-}
-section.mod-showdesc strong {
-	background:rgba(200,200,200,.125);
-	overflow: hidden;
-	font-weight: lighter;
-	line-height: 24px;
-	max-height: 48px;
-	font-size: 20px;
-	display: block;
-}
-section.mod-showdesc span {
-	background:rgba(200,200,200,.125);
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	display: block;
-	font-size: 100%;
-	margin: 0px 0 0;
-	color: darkgray;
-	overflow: hidden;
-	width: 100%;
-}
-section.mod-showdesc p {
-	margin: 6px 0 0;
-	font-size: 93%;
-	line-height: 1.3em;
 }

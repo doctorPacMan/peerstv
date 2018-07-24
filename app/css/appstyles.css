@@ -94,12 +94,6 @@ section.hddn {
 	top: 100%;
 	opacity: .0;
 }
-section.xhddn {
-	opacity: .250;
-	right: -360px;
-	box-shadow: none;
-	display: none;
-}
 section > h2,
 section > div {position: relative}
 section > h2 {z-index: 1}

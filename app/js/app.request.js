@@ -1,4 +1,59 @@
 Object.assign($App,{request:{
+telecastInfo: function(id) {
+	var day = new Date().getTime(), dates = [];
+	for(var i=-7;i<=7;i++) {
+		let d = new Date(day + i*86400*1e3);
+		dates.push(d.format('yyyy-mm-dd'));
+	}
+	console.log(id, dates);
+
+	var apiurl = $App.api.service('tv_guide').location;
+	apiurl+= 'schedule.json?channel='+10338258;
+	apiurl+= '&dates='+dates.join(',');
+	console.log('request.schedule', apiurl);
+
+	var alias = 'tochki_opory';
+	return new Promise(function(resolve, reject){
+		XHR.request(apiurl,function(data){
+			console.log(data);
+			var list = data.telecastsList.filter(v=>{return v.alias==alias});
+			//console.log(list);
+			resolve(list);
+		});
+	});
+	//return new Promise(function(resolve, reject){})
+},
+telecast: function(id) {
+/*
+	var apiurl = $App.api.service('tv_guide').location,
+		terrid = $App.api.territory().territoryId;
+	apiurl += 'telecastInfo.json?t='+terrid;
+	apiurl += '&fields=currentTelecast';
+	apiurl += '&telecast='+id;
+
+	XHR.request(apiurl,function(data){
+		console.log('telecastInfo',data);
+	});
+*/
+},
+current: function(cnid) {
+	var apiurl = $App.api.service('tv_guide').location,
+		terrid = $App.api.territory().territoryId;
+	apiurl += 'channels.json?t='+terrid;
+	apiurl += '&fields=currentTelecast';
+	apiurl += '&channel='+cnid;
+	return new Promise(function(resolve, reject){
+		XHR.request(apiurl,function(data){
+			var cha = data.channels[0];
+			if(!cha) resolve(false);
+			else {			
+				var cnid = !cha ? null : cha.channelId,
+					json = !cha ? null : cha.currentTelecast;
+				resolve($App.registerTelecast(json, cnid));
+			}
+		});
+	});
+},
 account: function(callback) {
 	//console.log('App.request.account');
 	var apiurl = $App.api.service('auth').location+'account/';

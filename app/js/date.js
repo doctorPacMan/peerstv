@@ -139,7 +139,7 @@ Date.prototype.format = function(f) {
     if (!this.valueOf()) return '&nbsp;';
     if (!f) f = "yyyy-mm-dd";
 
-    var d = this;
+    var d = this, h;
     var zf = function(n) {	return (n>9) ? (n) : ("0"+n) };
 
 	var getOffsetFromUTC = function(d) {
